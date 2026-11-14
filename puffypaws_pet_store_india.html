@@ -1,0 +1,2542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PuffyPaws | Gentle Care & Joy for Every Little Paw</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans & Fredoka -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FAF8F5',
+            terracotta: '#E07A5F',
+            terracottaDark: '#C86348',
+            sage: '#81B29A',
+            sageDark: '#679880',
+            slateDeep: '#3D405B',
+            sand: '#F4EFE6',
+            ochre: '#F2CC8F'
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['Fredoka', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #FAF8F5;
+      color: #3D405B;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    .font-display {
+      font-family: 'Fredoka', sans-serif;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FAF8F5;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D8CFC2;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #E07A5F;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #invoice-print-area, #invoice-print-area * {
+        visibility: visible;
+      }
+      #invoice-print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-terracotta/20 selection:text-terracotta">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-slateDeep text-cream text-xs sm:text-sm py-2 px-4 text-center font-medium">
+    <span>🐾 Free Express Delivery across India above ₹799 • Join now for <strong class="text-ochre">₹250</strong> Wallet Bonus & use <strong class="text-ochre">PAWS15</strong> for 15% OFF!</span>
+  </div>
+
+  <!-- Sticky Navigation Header -->
+  <header class="sticky top-0 z-40 bg-cream/95 backdrop-blur-md border-b border-stone-200/80 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-3 gap-3">
+        <!-- Brand Logo -->
+        <button onclick="switchTab('home')" class="flex items-center gap-2.5 text-left group focus:outline-none shrink-0">
+          <div class="w-11 h-11 rounded-2xl bg-terracotta text-white flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+            <i class="fa-solid fa-paw text-xl"></i>
+          </div>
+          <div>
+            <span class="font-display text-2xl font-bold tracking-tight text-slateDeep block leading-none">Puffy<span class="text-terracotta">Paws</span></span>
+            <span class="text-[11px] text-stone-500 font-medium hidden sm:block mt-0.5">Gentle Care & Joy for Every Little Paw</span>
+          </div>
+        </button>
+
+        <!-- Header Search Bar (Desktop/Tablet) -->
+        <div class="hidden md:flex items-center relative flex-1 max-w-md mx-4">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-stone-400 text-sm"></i>
+          <input type="text" id="header-search-input" oninput="handleHeaderSearch(this.value)" placeholder="Search food, toys, shampoo..." class="w-full pl-9 pr-4 py-2 bg-white border border-stone-200 rounded-2xl text-sm focus:outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/15 transition-all">
+        </div>
+
+        <!-- User Actions: Account & Cart -->
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+          <!-- User Profile / Sign In Button -->
+          <button id="user-account-btn" onclick="handleUserAccountClick()" class="flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-white border border-stone-200 hover:border-terracotta/50 hover:bg-sand/50 text-slateDeep text-sm font-semibold transition-all shadow-2xs">
+            <i class="fa-regular fa-user text-terracotta"></i>
+            <span id="user-account-label" class="max-w-[130px] truncate">Sign In / Join</span>
+          </button>
+
+          <!-- Shopping Cart Drawer Button -->
+          <button onclick="toggleCartDrawer(true)" class="relative flex items-center gap-2 px-3.5 py-2.5 rounded-2xl bg-terracotta hover:bg-terracottaDark text-white text-sm font-semibold transition-all shadow-sm">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span class="hidden sm:inline">Cart</span>
+            <span id="cart-badge-count" class="bg-white text-terracotta text-xs font-bold px-2 py-0.5 rounded-full min-w-[22px] text-center">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Search Bar -->
+      <div class="md:hidden pb-2.5">
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-stone-400 text-sm"></i>
+          <input type="text" id="mobile-search-input" oninput="handleHeaderSearch(this.value)" placeholder="Search 125+ pet essentials..." class="w-full pl-9 pr-4 py-2 bg-white border border-stone-200 rounded-2xl text-sm focus:outline-none focus:border-terracotta">
+        </div>
+      </div>
+
+      <!-- Always-Visible Horizontal Navigation Bar -->
+      <nav aria-label="Main Navigation" class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-2.5 border-t border-stone-200/70">
+        <button onclick="switchTab('home')" data-tab="home" class="nav-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-house text-xs"></i>
+          <span>Home</span>
+        </button>
+        <button onclick="switchTab('shop')" data-tab="shop" class="nav-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-store text-xs"></i>
+          <span>Shop All <span class="opacity-75">(125)</span></span>
+        </button>
+        <button onclick="switchTab('vet')" data-tab="vet" class="nav-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-stethoscope text-xs"></i>
+          <span>Vet Consultation</span>
+        </button>
+        <button onclick="switchTab('testimonials')" data-tab="testimonials" class="nav-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-heart text-xs"></i>
+          <span>Testimonials</span>
+        </button>
+        <button onclick="switchTab('contact')" data-tab="contact" class="nav-btn shrink-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-envelope text-xs"></i>
+          <span>Contact Us</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT VIEWS -->
+  <main class="flex-1">
+
+    <!-- ==================== 1. HOME TAB ==================== -->
+    <section id="view-home" class="tab-view">
+      <!-- Hero Banner -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12">
+        <div class="bg-gradient-to-br from-[#F7EFE5] via-[#FAF8F5] to-[#E8F1EC] rounded-3xl p-6 sm:p-10 lg:p-14 border border-stone-200/80 shadow-sm relative overflow-hidden">
+          <div class="grid lg:grid-cols-12 gap-8 items-center relative z-10">
+            <div class="lg:col-span-7 space-y-5">
+              <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-sage/40 text-sageDark text-xs font-bold tracking-wide uppercase">
+                <i class="fa-solid fa-leaf"></i> Made with Love for Indian Pet Families
+              </div>
+              <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-slateDeep leading-[1.12]">
+                Gentle Care & Joy for <span class="text-terracotta">Every Little Paw</span>
+              </h1>
+              <p class="text-stone-600 text-base sm:text-lg max-w-xl leading-relaxed">
+                Wholesome nutrition, Ayurvedic & oatmeal grooming, enrichment toys, and vet-approved essentials for Dogs, Cats, Rabbits, Birds, and Aquarium Fish across India.
+              </p>
+              <div class="flex flex-wrap items-center gap-3 pt-2">
+                <button onclick="switchTab('shop')" class="px-6 py-3.5 rounded-2xl bg-terracotta hover:bg-terracottaDark text-white font-semibold text-sm sm:text-base shadow-md shadow-terracotta/20 transition-all flex items-center gap-2">
+                  <span>Explore 125+ Pet Essentials</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <button onclick="switchTab('vet')" class="px-6 py-3.5 rounded-2xl bg-white hover:bg-sand text-slateDeep border border-stone-200 font-semibold text-sm sm:text-base transition-all flex items-center gap-2">
+                  <i class="fa-solid fa-stethoscope text-sageDark"></i>
+                  <span>Book Video Vet Consult</span>
+                </button>
+              </div>
+              <!-- Trust Badges -->
+              <div class="grid grid-cols-3 gap-4 pt-4 max-w-lg border-t border-stone-200/70">
+                <div>
+                  <p class="font-display text-xl sm:text-2xl font-bold text-slateDeep">125+</p>
+                  <p class="text-xs text-stone-500">Curated Products</p>
+                </div>
+                <div>
+                  <p class="font-display text-xl sm:text-2xl font-bold text-slateDeep">5 Species</p>
+                  <p class="text-xs text-stone-500">Specialized Care</p>
+                </div>
+                <div>
+                  <p class="font-display text-xl sm:text-2xl font-bold text-slateDeep">₹250</p>
+                  <p class="text-xs text-stone-500">Welcome Wallet Gift</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero Visual Collage -->
+            <div class="lg:col-span-5">
+              <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                <div onclick="jumpToSpecies('Dog')" class="cursor-pointer bg-white/90 hover:bg-white p-4 rounded-3xl border border-stone-200/70 shadow-xs hover:shadow-md transition-all group">
+                  <div class="h-28 flex items-center justify-center" id="hero-svg-dog"></div>
+                  <p class="font-display font-bold text-center text-slateDeep mt-2 group-hover:text-terracotta">Dogs & Pups</p>
+                  <p class="text-[11px] text-center text-stone-500">25 Essentials →</p>
+                </div>
+                <div onclick="jumpToSpecies('Cat')" class="cursor-pointer bg-white/90 hover:bg-white p-4 rounded-3xl border border-stone-200/70 shadow-xs hover:shadow-md transition-all group mt-4">
+                  <div class="h-28 flex items-center justify-center" id="hero-svg-cat"></div>
+                  <p class="font-display font-bold text-center text-slateDeep mt-2 group-hover:text-terracotta">Cats & Kittens</p>
+                  <p class="text-[11px] text-center text-stone-500">25 Essentials →</p>
+                </div>
+                <div onclick="jumpToSpecies('Rabbit')" class="cursor-pointer bg-white/90 hover:bg-white p-4 rounded-3xl border border-stone-200/70 shadow-xs hover:shadow-md transition-all group">
+                  <div class="h-28 flex items-center justify-center" id="hero-svg-rabbit"></div>
+                  <p class="font-display font-bold text-center text-slateDeep mt-2 group-hover:text-terracotta">Rabbits & Bunnies</p>
+                  <p class="text-[11px] text-center text-stone-500">25 Essentials →</p>
+                </div>
+                <div onclick="jumpToSpecies('Bird')" class="cursor-pointer bg-white/90 hover:bg-white p-4 rounded-3xl border border-stone-200/70 shadow-xs hover:shadow-md transition-all group mt-4">
+                  <div class="h-28 flex items-center justify-center" id="hero-svg-bird"></div>
+                  <p class="font-display font-bold text-center text-slateDeep mt-2 group-hover:text-terracotta">Birds & Fish</p>
+                  <p class="text-[11px] text-center text-stone-500">50 Essentials →</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shop By Pet Species Quick Pills -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h2 class="font-display text-2xl sm:text-3xl font-bold text-slateDeep">Shop by Little Companion</h2>
+            <p class="text-sm text-stone-500 mt-1">Select your pet to explore 25 tailored items across 5 care categories</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <button onclick="jumpToSpecies('Dog')" class="bg-white hover:bg-[#FFF5F2] border border-stone-200 hover:border-terracotta rounded-3xl p-5 text-center transition-all shadow-2xs group">
+            <span class="text-4xl block mb-2 group-hover:scale-110 transition-transform">🐶</span>
+            <h3 class="font-display font-bold text-lg text-slateDeep">Dog</h3>
+            <p class="text-xs text-stone-500 mt-0.5">Food, Toys, Grooming & More</p>
+          </button>
+          <button onclick="jumpToSpecies('Cat')" class="bg-white hover:bg-[#F3F8F5] border border-stone-200 hover:border-sage rounded-3xl p-5 text-center transition-all shadow-2xs group">
+            <span class="text-4xl block mb-2 group-hover:scale-110 transition-transform">🐱</span>
+            <h3 class="font-display font-bold text-lg text-slateDeep">Cat</h3>
+            <p class="text-xs text-stone-500 mt-0.5">Treats, Litter, Scratchers & Care</p>
+          </button>
+          <button onclick="jumpToSpecies('Rabbit')" class="bg-white hover:bg-[#FFF9EE] border border-stone-200 hover:border-ochre rounded-3xl p-5 text-center transition-all shadow-2xs group">
+            <span class="text-4xl block mb-2 group-hover:scale-110 transition-transform">🐰</span>
+            <h3 class="font-display font-bold text-lg text-slateDeep">Rabbit</h3>
+            <p class="text-xs text-stone-500 mt-0.5">Timothy Hay, Chews & Hutches</p>
+          </button>
+          <button onclick="jumpToSpecies('Bird')" class="bg-white hover:bg-[#F2F7FA] border border-stone-200 hover:border-sky-400 rounded-3xl p-5 text-center transition-all shadow-2xs group">
+            <span class="text-4xl block mb-2 group-hover:scale-110 transition-transform">🦜</span>
+            <h3 class="font-display font-bold text-lg text-slateDeep">Bird</h3>
+            <p class="text-xs text-stone-500 mt-0.5">Millet, Swings, Cuttlebone</p>
+          </button>
+          <button onclick="jumpToSpecies('Fish')" class="col-span-2 sm:col-span-1 bg-white hover:bg-[#F0F9F8] border border-stone-200 hover:border-teal-500 rounded-3xl p-5 text-center transition-all shadow-2xs group">
+            <span class="text-4xl block mb-2 group-hover:scale-110 transition-transform">🐠</span>
+            <h3 class="font-display font-bold text-lg text-slateDeep">Fish</h3>
+            <p class="text-xs text-stone-500 mt-0.5">Pellets, Filters & Aquascapes</p>
+          </button>
+        </div>
+      </div>
+
+      <!-- Featured Products Across All 5 Species -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-terracotta">Handpicked Bestsellers</span>
+            <h2 class="font-display text-2xl sm:text-3xl font-bold text-slateDeep mt-1">Featured Across All 5 Species</h2>
+          </div>
+          <button onclick="switchTab('shop')" class="text-sm font-semibold text-terracotta hover:text-terracottaDark flex items-center gap-1.5">
+            <span>View Full 125-Item Catalog</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+        <div id="home-featured-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+          <!-- Populated dynamically via JS with 2 items from each of the 5 species -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 2. SHOP ALL TAB (125 PRODUCTS) ==================== -->
+    <section id="view-shop" class="tab-view hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header & Search -->
+        <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-2xs mb-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-stone-100">
+            <div>
+              <h1 class="font-display text-2xl sm:text-3xl font-bold text-slateDeep">PuffyPaws Complete Catalog</h1>
+              <p class="text-sm text-stone-500 mt-1">125 bespoke essentials across 5 species & 5 specialized care categories</p>
+            </div>
+            <!-- Shop Search Input -->
+            <div class="relative w-full md:w-80">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-stone-400 text-sm"></i>
+              <input type="text" id="shop-search-input" oninput="updateSearchQuery(this.value)" placeholder="Search by product, ingredient, pet..." class="w-full pl-10 pr-9 py-2.5 bg-cream border border-stone-200 rounded-2xl text-sm focus:outline-none focus:border-terracotta focus:ring-2 focus:ring-terracotta/15">
+              <button id="clear-search-btn" onclick="updateSearchQuery('')" class="hidden absolute right-3 top-3 text-stone-400 hover:text-slateDeep">
+                <i class="fa-solid fa-circle-xmark"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter Row 1: Pet Species -->
+          <div class="pt-4">
+            <label class="text-xs font-bold uppercase tracking-wider text-stone-400 block mb-2.5">1. Filter by Pet Species</label>
+            <div id="species-filter-pills" class="flex flex-wrap gap-2">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Filter Row 2: Sub-Category -->
+          <div class="pt-4">
+            <label class="text-xs font-bold uppercase tracking-wider text-stone-400 block mb-2.5">2. Filter by Care Category</label>
+            <div id="category-filter-pills" class="flex flex-wrap gap-2">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Active Results Bar -->
+          <div class="mt-5 pt-4 border-t border-stone-100 flex flex-wrap items-center justify-between gap-3">
+            <p class="text-sm font-medium text-stone-600">
+              Showing <span id="filtered-count" class="font-bold text-terracotta">125</span> of 125 products
+            </p>
+            <button onclick="resetShopFilters()" class="text-xs font-semibold px-3.5 py-2 rounded-xl bg-sand hover:bg-stone-200/80 text-slateDeep transition-colors flex items-center gap-1.5">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>Reset Filters</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="shop-products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Empty Search State -->
+        <div id="shop-empty-state" class="hidden bg-white rounded-3xl p-12 text-center border border-stone-200/80 my-6">
+          <div class="w-16 h-16 rounded-full bg-sand text-terracotta flex items-center justify-center mx-auto mb-4 text-2xl">
+            <i class="fa-solid fa-paw"></i>
+          </div>
+          <h3 class="font-display text-xl font-bold text-slateDeep">No matching pawsome items found</h3>
+          <p class="text-sm text-stone-500 mt-1 max-w-md mx-auto">Try clearing your search term or switching back to "All Species" and "All Categories".</p>
+          <button onclick="resetShopFilters()" class="mt-4 px-5 py-2.5 rounded-2xl bg-terracotta text-white text-sm font-semibold hover:bg-terracottaDark">Reset All Filters</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3. VET CONSULTATION TAB ==================== -->
+    <section id="view-vet" class="tab-view hidden">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="text-center max-w-2xl mx-auto mb-8">
+          <span class="inline-block px-3.5 py-1 rounded-full bg-sage/20 text-sageDark text-xs font-bold uppercase tracking-wider mb-2">24×7 Tele-Vet Care India</span>
+          <h1 class="font-display text-3xl sm:text-4xl font-bold text-slateDeep">Book a Gentle Video Vet Consultation</h1>
+          <p class="text-stone-600 text-sm sm:text-base mt-2">Connect with licensed Indian veterinarians specializing in small animals, exotics, avian, and aquatic health from the comfort of home.</p>
+        </div>
+
+        <div class="grid md:grid-cols-12 gap-6">
+          <!-- Vet Specialists Card -->
+          <div class="md:col-span-5 space-y-4">
+            <div class="bg-white rounded-3xl p-5 border border-stone-200/80 shadow-2xs">
+              <h3 class="font-display font-bold text-lg text-slateDeep mb-3">Our Senior Panel</h3>
+              <div class="space-y-3">
+                <div class="p-3.5 rounded-2xl bg-cream border border-stone-200/70 flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-2xl bg-terracotta/15 text-terracotta flex items-center justify-center font-bold">DR</div>
+                  <div>
+                    <p class="font-semibold text-sm text-slateDeep">Dr. Ananya Sharma, MVSc</p>
+                    <p class="text-xs text-stone-500">Canine & Feline Nutrition • Bengaluru</p>
+                  </div>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-cream border border-stone-200/70 flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-2xl bg-sage/20 text-sageDark flex items-center justify-center font-bold">DR</div>
+                  <div>
+                    <p class="font-semibold text-sm text-slateDeep">Dr. Rohan Deshmukh, BVSc</p>
+                    <p class="text-xs text-stone-500">Rabbits & Avian Specialist • Mumbai</p>
+                  </div>
+                </div>
+                <div class="p-3.5 rounded-2xl bg-cream border border-stone-200/70 flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold">DR</div>
+                  <div>
+                    <p class="font-semibold text-sm text-slateDeep">Dr. Kavita Nair, MFSc</p>
+                    <p class="text-xs text-stone-500">Ornamental Fish & Aquatics • Kochi</p>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 p-3.5 rounded-2xl bg-sage/15 text-sageDark text-xs font-medium">
+                <i class="fa-solid fa-circle-check mr-1"></i> Includes digital prescription & 7-day free WhatsApp follow-up. Consultation fee: <strong>₹299</strong> (Free with orders above ₹1,499).
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking Form -->
+          <div class="md:col-span-7">
+            <form onsubmit="submitVetBooking(event)" class="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-2xs space-y-4">
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-stone-500 mb-1.5">Pet Species</label>
+                  <select id="vet-species" required class="w-full px-4 py-2.5 rounded-2xl bg-cream border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+                    <option value="Dog">🐶 Dog</option>
+                    <option value="Cat">🐱 Cat</option>
+                    <option value="Rabbit">🐰 Rabbit</option>
+                    <option value="Bird">🦜 Bird</option>
+                    <option value="Fish">🐠 Fish</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-stone-500 mb-1.5">Pet's Name</label>
+                  <input type="text" id="vet-pet-name" required placeholder="e.g. Bruno, Mochi, Coco" class="w-full px-4 py-2.5 rounded-2xl bg-cream border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase text-stone-500 mb-1.5">Select Specialist</label>
+                <select id="vet-doctor" required class="w-full px-4 py-2.5 rounded-2xl bg-cream border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+                  <option value="Dr. Ananya Sharma (Dogs & Cats)">Dr. Ananya Sharma (Dogs & Cats)</option>
+                  <option value="Dr. Rohan Deshmukh (Rabbits & Birds)">Dr. Rohan Deshmukh (Rabbits & Birds)</option>
+                  <option value="Dr. Kavita Nair (Aquarium Fish)">Dr. Kavita Nair (Aquarium Fish)</option>
+                </select>
+              </div>
+
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold uppercase text-stone-500 mb-1.5">Preferred Date</label>
+                  <input type="date" id="vet-date" required class="w-full px-4 py-2.5 rounded-2xl bg-cream border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold uppercase text-stone-500 mb-1.5">Time Slot (IST)</label>
+                  <select id="vet-slot" required class="w-full px-4 py-2.5 rounded-2xl bg-cream border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+                    <option value="10:30 AM - 11:00 AM">10:30 AM - 11:00 AM</option>
+                    <option value="02:00 PM - 02:30 PM">02:00 PM - 02:30 PM</option>
+                    <option value="05:30 PM - 06:00 PM">05:30 PM - 06:00 PM</option>
+                    <option value="08:00 PM - 08:30 PM">08:00 PM - 08:30 PM</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold uppercase text-stone-500 mb-1.5">Concern / Symptoms</label>
+                <textarea id="vet-notes" rows="3" required placeholder="Describe diet questions, skin itchiness, lethargy, or routine checkup..." class="w-full px-4 py-2.5 rounded-2xl bg-cream border border-stone-200 text-sm focus:outline-none focus:border-terracotta"></textarea>
+              </div>
+
+              <button type="submit" class="w-full py-3.5 rounded-2xl bg-terracotta hover:bg-terracottaDark text-white font-semibold text-sm shadow-sm transition-all">
+                Confirm Video Consultation Slot
+              </button>
+            </form>
+
+            <!-- Instant Booking Confirmation Box -->
+            <div id="vet-confirmation-card" class="hidden mt-4 bg-sage/15 border border-sage rounded-3xl p-5">
+              <div class="flex items-start gap-3">
+                <i class="fa-solid fa-circle-check text-sageDark text-xl mt-0.5"></i>
+                <div>
+                  <h4 class="font-display font-bold text-slateDeep">Consultation Scheduled!</h4>
+                  <p id="vet-confirmation-text" class="text-sm text-stone-700 mt-1"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 4. TESTIMONIALS TAB ==================== -->
+    <section id="view-testimonials" class="tab-view hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <span class="inline-block px-3.5 py-1 rounded-full bg-terracotta/15 text-terracotta text-xs font-bold uppercase tracking-wider mb-2">Verified Pet Parents</span>
+          <h1 class="font-display text-3xl sm:text-4xl font-bold text-slateDeep">Loved by Tails, Whiskers, Wings & Fins</h1>
+          <p class="text-stone-600 text-sm sm:text-base mt-2">Real stories from pet families across Mumbai, Delhi NCR, Bengaluru, Pune, and Hyderabad.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+              <p class="text-stone-700 text-sm leading-relaxed">"Finding genuine, dust-free Timothy Hay and natural apple-wood chews for our Holland Lop bunny in Pune used to be so tough. PuffyPaws delivered fresh stock in 24 hours!"</p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-stone-100 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-ochre/40 text-slateDeep font-bold flex items-center justify-center text-sm">SM</div>
+              <div>
+                <p class="font-semibold text-sm text-slateDeep">Sneha Kulkarni</p>
+                <p class="text-xs text-stone-500">Bunny Mom to Snowball • Pune</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+              <p class="text-stone-700 text-sm leading-relaxed">"The Oatmeal & Neem Paw Balm healed our Indie dog Simba's dry paws in one week. Plus, getting an engraved brass tag customized right on the product page is super convenient."</p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-stone-100 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-terracotta/20 text-terracotta font-bold flex items-center justify-center text-sm">AK</div>
+              <div>
+                <p class="font-semibold text-sm text-slateDeep">Arjun Kapoor</p>
+                <p class="text-xs text-stone-500">Dog Dad to Simba • Gurugram</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-6 border border-stone-200/80 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+              <p class="text-stone-700 text-sm leading-relaxed">"From Tofu Flushable Cat Litter to Bio-Sponge Aquarium Filters for my planted Betta tank, PuffyPaws is the only store where I can shop for all my pets in a single cart."</p>
+            </div>
+            <div class="mt-5 pt-4 border-t border-stone-100 flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-sage/25 text-sageDark font-bold flex items-center justify-center text-sm">MR</div>
+              <div>
+                <p class="font-semibold text-sm text-slateDeep">Meera Raghavan</p>
+                <p class="text-xs text-stone-500">Cat & Aquascape Parent • Chennai</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 5. CONTACT TAB ==================== -->
+    <section id="view-contact" class="tab-view hidden">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid md:grid-cols-12 gap-8 bg-white rounded-3xl p-6 sm:p-10 border border-stone-200/80 shadow-2xs">
+          <div class="md:col-span-5 space-y-5">
+            <span class="inline-block px-3.5 py-1 rounded-full bg-terracotta/15 text-terracotta text-xs font-bold uppercase">We're Here to Help</span>
+            <h1 class="font-display text-3xl font-bold text-slateDeep">Say Hello to PuffyPaws</h1>
+            <p class="text-sm text-stone-600 leading-relaxed">Need help picking the right kibble size, aquarium filter capacity, or tracking an order? Our pet care concierge replies within 2 hours.</p>
+            <div class="space-y-3 text-sm text-stone-700 pt-2">
+              <p class="flex items-center gap-3"><i class="fa-solid fa-location-dot text-terracotta w-5"></i> 42 Indiranagar 100ft Road, Bengaluru 560038</p>
+              <p class="flex items-center gap-3"><i class="fa-solid fa-phone text-terracotta w-5"></i> +91 80 4123 9876 (9 AM – 9 PM IST)</p>
+              <p class="flex items-center gap-3"><i class="fa-solid fa-envelope text-terracotta w-5"></i> care@puffypaws.in</p>
+            </div>
+          </div>
+          <form onsubmit="submitContactForm(event)" class="md:col-span-7 space-y-4">
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Your Name</label>
+                <input type="text" required placeholder="Enter your name" class="w-full px-4 py-2.5 rounded-2xl bg-cream border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+              </div>
+              <div>
+                <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Email Address</label>
+                <input type="email" required placeholder="you@example.com" class="w-full px-4 py-2.5 rounded-2xl bg-cream border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Topic</label>
+              <select class="w-full px-4 py-2.5 rounded-2xl bg-cream border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+                <option>Order & Delivery Support</option>
+                <option>Product Nutrition / Sizing Advice</option>
+                <option>PuffyPaws Pay Wallet & Refunds</option>
+                <option>Bulk / Shelter Partnership</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Message</label>
+              <textarea rows="4" required placeholder="How can we make your little companion's day brighter?" class="w-full px-4 py-2.5 rounded-2xl bg-cream border border-stone-200 text-sm focus:outline-none focus:border-terracotta"></textarea>
+            </div>
+            <button type="submit" class="px-6 py-3 rounded-2xl bg-terracotta hover:bg-terracottaDark text-white font-semibold text-sm transition-all">
+              Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slateDeep text-stone-300 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center gap-2.5 text-white mb-3">
+            <div class="w-9 h-9 rounded-xl bg-terracotta flex items-center justify-center">
+              <i class="fa-solid fa-paw"></i>
+            </div>
+            <span class="font-display text-xl font-bold">PuffyPaws</span>
+          </div>
+          <p class="text-xs text-stone-400 leading-relaxed">Gentle Care & Joy for Every Little Paw. Serving Indian pet families with vet-approved essentials for Dogs, Cats, Rabbits, Birds & Fish.</p>
+        </div>
+        <div>
+          <h4 class="font-display font-bold text-white text-sm mb-3">Pet Categories</h4>
+          <ul class="space-y-2 text-xs">
+            <li><button onclick="jumpToSpecies('Dog')" class="hover:text-terracotta">Dog Food & Accessories</button></li>
+            <li><button onclick="jumpToSpecies('Cat')" class="hover:text-terracotta">Cat Treats & Grooming</button></li>
+            <li><button onclick="jumpToSpecies('Rabbit')" class="hover:text-terracotta">Rabbit Hay & Toys</button></li>
+            <li><button onclick="jumpToSpecies('Bird')" class="hover:text-terracotta">Bird Seeds & Perches</button></li>
+            <li><button onclick="jumpToSpecies('Fish')" class="hover:text-terracotta">Aquarium Food & Care</button></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-display font-bold text-white text-sm mb-3">Quick Links</h4>
+          <ul class="space-y-2 text-xs">
+            <li><button onclick="switchTab('vet')" class="hover:text-terracotta">24×7 Vet Consultation</button></li>
+            <li><button onclick="switchTab('testimonials')" class="hover:text-terracotta">Pet Parent Reviews</button></li>
+            <li><button onclick="switchTab('contact')" class="hover:text-terracotta">Contact & Helpdesk</button></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-display font-bold text-white text-sm mb-3">Active Offers</h4>
+          <div class="bg-white/10 rounded-2xl p-3.5 text-xs space-y-1.5">
+            <p><strong class="text-ochre">PAWS15</strong> — 15% OFF sitewide</p>
+            <p><strong class="text-sage">FIRSTGIFT</strong> — Flat ₹100 OFF</p>
+            <p class="text-stone-400 pt-1">100% GST Compliant Tax Invoices</p>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-white/10 mt-8 pt-6 text-center text-xs text-stone-400">
+        © 2026 PuffyPaws Pet Care Pvt. Ltd. • Crafted with love in India 🇮🇳
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL 1: AUTH & PET ONBOARDING ==================== -->
+  <div id="auth-modal" class="fixed inset-0 z-50 hidden bg-slateDeep/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-cream rounded-3xl max-w-md w-full p-6 sm:p-8 border border-stone-200 shadow-2xl relative">
+      <button onclick="closeModal('auth-modal')" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-sand hover:bg-stone-200 flex items-center justify-center text-slateDeep">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Standard Sign In / Sign Up View -->
+      <div id="auth-main-view">
+        <div class="flex items-center gap-2.5 mb-4">
+          <div class="w-10 h-10 rounded-2xl bg-terracotta text-white flex items-center justify-center">
+            <i class="fa-solid fa-paw"></i>
+          </div>
+          <div>
+            <h2 class="font-display text-2xl font-bold text-slateDeep">Welcome to PuffyPaws</h2>
+            <p class="text-xs text-stone-500">Sign in or join to unlock ₹250 PuffyPaws Pay Wallet</p>
+          </div>
+        </div>
+
+        <!-- Mode Switcher -->
+        <div class="grid grid-cols-2 bg-sand p-1 rounded-2xl mb-5">
+          <button type="button" id="auth-tab-signup" onclick="setAuthMode('signup')" class="py-2 rounded-xl text-xs font-bold bg-white text-slateDeep shadow-2xs transition-all">Create Account</button>
+          <button type="button" id="auth-tab-signin" onclick="setAuthMode('signin')" class="py-2 rounded-xl text-xs font-bold text-stone-500 transition-all">Sign In</button>
+        </div>
+
+        <form onsubmit="handleAuthSubmit(event)" class="space-y-3.5">
+          <div id="auth-name-group">
+            <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Your Name</label>
+            <input type="text" id="auth-user-name" placeholder="Enter your full name" class="w-full px-4 py-2.5 rounded-2xl bg-white border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+          </div>
+          <div id="auth-pet-group">
+            <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Your Pet's Name</label>
+            <input type="text" id="auth-pet-name" placeholder="e.g. Bella, Sheru, Oreo" class="w-full px-4 py-2.5 rounded-2xl bg-white border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Email Address</label>
+            <input type="email" id="auth-email" required placeholder="petparent@example.com" class="w-full px-4 py-2.5 rounded-2xl bg-white border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Password</label>
+            <input type="password" id="auth-password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-2xl bg-white border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+          </div>
+          <button type="submit" id="auth-submit-btn" class="w-full py-3.5 rounded-2xl bg-terracotta hover:bg-terracottaDark text-white font-semibold text-sm shadow-sm transition-all mt-2">
+            Join PuffyPaws & Get ₹250 Wallet
+          </button>
+        </form>
+      </div>
+
+      <!-- First-Time Pet Onboarding Prompt (If user logs in without saved pet name) -->
+      <div id="auth-onboarding-view" class="hidden">
+        <div class="text-center mb-5">
+          <span class="text-4xl block mb-2">🐾</span>
+          <h2 class="font-display text-2xl font-bold text-slateDeep">Tell Us About Your Little Paw!</h2>
+          <p class="text-xs text-stone-500 mt-1">Personalize your PuffyPaws experience & claim your ₹250 wallet gift</p>
+        </div>
+        <form onsubmit="completePetOnboarding(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Your Name</label>
+            <input type="text" id="onboard-user-name" required placeholder="Enter your name" class="w-full px-4 py-2.5 rounded-2xl bg-white border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-stone-500 mb-1">Your Pet's Name</label>
+            <input type="text" id="onboard-pet-name" required placeholder="Enter your pet's name" class="w-full px-4 py-2.5 rounded-2xl bg-white border border-stone-200 text-sm focus:outline-none focus:border-terracotta">
+          </div>
+          <button type="submit" class="w-full py-3.5 rounded-2xl bg-sageDark hover:bg-sage text-white font-semibold text-sm transition-all">
+            Save & Continue
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 2: USER DASHBOARD MODAL ==================== -->
+  <div id="dashboard-modal" class="fixed inset-0 z-50 hidden bg-slateDeep/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-cream rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 border border-stone-200 shadow-2xl relative">
+      <button onclick="closeModal('dashboard-modal')" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-sand hover:bg-stone-200 flex items-center justify-center text-slateDeep">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <!-- Personalized Banner -->
+      <div class="bg-gradient-to-r from-terracotta to-[#E89279] text-white rounded-3xl p-6 mb-6 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <span class="text-xs uppercase tracking-wider font-bold bg-white/20 px-3 py-1 rounded-full">PuffyPaws Family Member</span>
+            <h2 id="dash-greeting" class="font-display text-2xl sm:text-3xl font-bold mt-2">Hi Cutie!</h2>
+            <p id="dash-email" class="text-xs text-white/90 mt-1"></p>
+          </div>
+          <button onclick="logoutUser()" class="px-4 py-2 rounded-2xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold backdrop-blur-xs transition-all">
+            <i class="fa-solid fa-right-from-bracket mr-1"></i> Sign Out
+          </button>
+        </div>
+      </div>
+
+      <!-- Wallet & Address Grid -->
+      <div class="grid md:grid-cols-2 gap-5 mb-6">
+        <!-- PuffyPaws Pay Wallet -->
+        <div class="bg-white rounded-3xl p-5 border border-stone-200/80 shadow-2xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase text-stone-400">PuffyPaws Pay Wallet</span>
+              <i class="fa-solid fa-wallet text-sageDark text-lg"></i>
+            </div>
+            <p id="dash-wallet-balance" class="font-display text-3xl font-bold text-slateDeep">₹250</p>
+            <p class="text-xs text-stone-500 mt-1">Can be applied in full or split with UPI/Card at checkout</p>
+          </div>
+          <button onclick="topUpWallet()" class="mt-4 w-full py-2.5 rounded-2xl bg-sage/20 hover:bg-sage/30 text-sageDark font-bold text-xs transition-all flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-plus"></i> Add ₹500 Instant Top-Up
+          </button>
+        </div>
+
+        <!-- Default Delivery Address -->
+        <div class="bg-white rounded-3xl p-5 border border-stone-200/80 shadow-2xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold uppercase text-stone-400">Default Delivery Address</span>
+              <i class="fa-solid fa-location-dot text-terracotta text-lg"></i>
+            </div>
+            <textarea id="dash-address-input" rows="2" class="w-full p-2.5 rounded-xl bg-cream border border-stone-200 text-xs text-slateDeep focus:outline-none focus:border-terracotta"></textarea>
+          </div>
+          <button onclick="saveDashboardAddress()" class="mt-3 w-full py-2.5 rounded-2xl bg-sand hover:bg-stone-200 text-slateDeep font-bold text-xs transition-all">
+            Save Delivery Address
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Vouchers -->
+      <div class="mb-6">
+        <h3 class="font-display text-lg font-bold text-slateDeep mb-3">Active Vouchers & Coupon Codes</h3>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div class="bg-white border border-dashed border-terracotta rounded-2xl p-3.5 flex items-center justify-between">
+            <div>
+              <span class="font-mono font-bold text-sm text-terracotta">PAWS15</span>
+              <p class="text-xs text-stone-500">15% OFF on all pet essentials</p>
+            </div>
+            <button onclick="copyCouponCode('PAWS15')" class="px-3 py-1.5 rounded-xl bg-terracotta/10 hover:bg-terracotta text-terracotta hover:text-white text-xs font-bold transition-all">Copy</button>
+          </div>
+          <div class="bg-white border border-dashed border-sageDark rounded-2xl p-3.5 flex items-center justify-between">
+            <div>
+              <span class="font-mono font-bold text-sm text-sageDark">FIRSTGIFT</span>
+              <p class="text-xs text-stone-500">Flat ₹100 OFF on orders above ₹499</p>
+            </div>
+            <button onclick="copyCouponCode('FIRSTGIFT')" class="px-3 py-1.5 rounded-xl bg-sage/15 hover:bg-sageDark text-sageDark hover:text-white text-xs font-bold transition-all">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purchase History -->
+      <div>
+        <h3 class="font-display text-lg font-bold text-slateDeep mb-3">Purchase History & GST Invoices</h3>
+        <div id="dash-orders-list" class="space-y-3">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 3: PRODUCT DETAIL & CUSTOMIZATION ==================== -->
+  <div id="product-detail-modal" class="fixed inset-0 z-50 hidden bg-slateDeep/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-cream rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto p-6 sm:p-8 border border-stone-200 shadow-2xl relative">
+      <button onclick="closeModal('product-detail-modal')" class="absolute top-5 right-5 z-10 w-9 h-9 rounded-full bg-sand hover:bg-stone-200 flex items-center justify-center text-slateDeep">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div id="product-detail-content" class="grid md:grid-cols-12 gap-6 items-start">
+        <!-- Populated dynamically by openProductModal(id) -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DRAWER 4: SLIDE-OVER SHOPPING CART ==================== -->
+  <div id="cart-drawer-overlay" class="fixed inset-0 z-50 hidden bg-slateDeep/50 backdrop-blur-xs flex justify-end">
+    <div class="bg-cream w-full max-w-md h-full flex flex-col shadow-2xl border-l border-stone-200">
+      <!-- Drawer Header -->
+      <div class="p-5 bg-white border-b border-stone-200 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-bag-shopping text-terracotta text-lg"></i>
+          <h2 class="font-display text-xl font-bold text-slateDeep">Your Pet's Gift Bag</h2>
+        </div>
+        <button onclick="toggleCartDrawer(false)" class="w-9 h-9 rounded-full bg-sand hover:bg-stone-200 flex items-center justify-center text-slateDeep">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Cart Items List -->
+      <div id="cart-items-container" class="flex-1 overflow-y-auto p-5 space-y-3.5">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Cart Footer / Summary -->
+      <div id="cart-footer-summary" class="p-5 bg-white border-t border-stone-200 space-y-3">
+        <!-- Coupon Input -->
+        <div class="flex gap-2">
+          <input type="text" id="cart-coupon-input" placeholder="Coupon code (PAWS15 / FIRSTGIFT)" class="flex-1 px-3.5 py-2 rounded-xl bg-cream border border-stone-200 text-xs uppercase focus:outline-none focus:border-terracotta">
+          <button onclick="applyCartCoupon()" class="px-4 py-2 rounded-xl bg-slateDeep text-white text-xs font-bold hover:bg-slateDeep/90">Apply</button>
+        </div>
+        <div id="cart-coupon-status" class="hidden text-xs font-semibold text-sageDark"></div>
+
+        <!-- Totals -->
+        <div class="space-y-1.5 text-sm pt-1">
+          <div class="flex justify-between text-stone-500">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">₹0</span>
+          </div>
+          <div id="cart-discount-row" class="hidden flex justify-between text-sageDark font-medium">
+            <span>Coupon Discount</span>
+            <span id="cart-discount">-₹0</span>
+          </div>
+          <div class="flex justify-between font-bold text-base text-slateDeep pt-1.5 border-t border-stone-100">
+            <span>Estimated Total</span>
+            <span id="cart-total">₹0</span>
+          </div>
+        </div>
+
+        <!-- Exact Required Primary CTA Label -->
+        <button onclick="initiateCheckout()" class="w-full py-3.5 rounded-2xl bg-terracotta hover:bg-terracottaDark text-white font-bold text-sm shadow-md shadow-terracotta/20 transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-gift"></i>
+          <span>Proceed with a gift for your pet</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 5: AMAZON-STYLE CHECKOUT MODAL (WITH SPLIT WALLET SUPPORT) ==================== -->
+  <div id="checkout-modal" class="fixed inset-0 z-50 hidden bg-slateDeep/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-cream rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto p-6 sm:p-8 border border-stone-200 shadow-2xl relative">
+      <button onclick="closeModal('checkout-modal')" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-sand hover:bg-stone-200 flex items-center justify-center text-slateDeep">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <div class="mb-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-terracotta">Secure Indian Checkout</span>
+        <h2 class="font-display text-2xl sm:text-3xl font-bold text-slateDeep">Complete Your Pet's Order</h2>
+      </div>
+
+      <div class="grid md:grid-cols-12 gap-6">
+        <!-- Left Column: Address, Delivery Speed & Payment -->
+        <div class="md:col-span-7 space-y-5">
+          <!-- Step 1: Delivery Address -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200">
+            <h3 class="font-display font-bold text-sm text-slateDeep mb-2">1. Delivery Address</h3>
+            <textarea id="checkout-address" rows="2" required class="w-full p-2.5 rounded-xl bg-cream border border-stone-200 text-xs text-slateDeep focus:outline-none focus:border-terracotta"></textarea>
+          </div>
+
+          <!-- Step 2: Delivery Speed -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200">
+            <h3 class="font-display font-bold text-sm text-slateDeep mb-2.5">2. Delivery Speed</h3>
+            <div class="grid grid-cols-2 gap-2.5">
+              <label class="cursor-pointer border rounded-xl p-3 flex items-start gap-2.5 bg-cream/60 has-[:checked]:border-terracotta has-[:checked]:bg-terracotta/5">
+                <input type="radio" name="delivery-speed" value="standard" checked onchange="renderCheckoutSummary()" class="mt-0.5 accent-terracotta">
+                <div>
+                  <p class="text-xs font-bold text-slateDeep">Standard (2–4 Days)</p>
+                  <p class="text-[11px] text-sageDark font-semibold">FREE</p>
+                </div>
+              </label>
+              <label class="cursor-pointer border rounded-xl p-3 flex items-start gap-2.5 bg-cream/60 has-[:checked]:border-terracotta has-[:checked]:bg-terracotta/5">
+                <input type="radio" name="delivery-speed" value="express" onchange="renderCheckoutSummary()" class="mt-0.5 accent-terracotta">
+                <div>
+                  <p class="text-xs font-bold text-slateDeep">Express (24 Hrs)</p>
+                  <p class="text-[11px] text-terracotta font-semibold">+₹79</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Step 3: PuffyPaws Pay Wallet Split-Payment Toggle + Secondary Payment Methods -->
+          <div class="bg-white rounded-2xl p-4 border border-stone-200 space-y-3">
+            <h3 class="font-display font-bold text-sm text-slateDeep">3. Payment Options</h3>
+
+            <!-- Amazon-style Wallet Apply Checkbox (Allows paying part via Wallet & balance via UPI/Card/COD) -->
+            <div id="wallet-apply-box" class="border border-sage/60 rounded-xl p-3 bg-sage/10 flex items-center justify-between gap-3">
+              <label class="flex items-start gap-2.5 cursor-pointer">
+                <input type="checkbox" id="use-wallet-checkbox" checked onchange="renderCheckoutSummary()" class="mt-0.5 w-4 h-4 accent-sageDark rounded">
+                <div>
+                  <p class="text-xs font-bold text-slateDeep flex items-center gap-1.5">
+                    <span>Use PuffyPaws Pay Wallet Balance</span>
+                    <span class="px-2 py-0.5 rounded-full bg-white text-sageDark text-[10px] font-bold" id="checkout-wallet-pill">₹250 Available</span>
+                  </p>
+                  <p id="checkout-wallet-split-note" class="text-[11px] text-stone-600 mt-0.5">Apply wallet credit and pay any remaining balance below.</p>
+                </div>
+              </label>
+              <i class="fa-solid fa-wallet text-sageDark text-lg shrink-0"></i>
+            </div>
+
+            <div id="secondary-payment-section" class="space-y-2 pt-1">
+              <p id="secondary-payment-heading" class="text-[11px] font-bold uppercase text-stone-500">Pay Remaining Balance Using:</p>
+
+              <!-- Option A: UPI ID / QR -->
+              <label class="cursor-pointer border rounded-xl p-3 block bg-cream/50 has-[:checked]:border-terracotta has-[:checked]:bg-terracotta/5">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <input type="radio" name="payment-method" value="UPI (GPay / PhonePe / Paytm)" checked onchange="togglePaymentFields(this.value)" class="accent-terracotta">
+                    <p class="text-xs font-bold text-slateDeep">UPI ID / Instant QR (GPay, PhonePe, Paytm)</p>
+                  </div>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sage/20 text-sageDark">UPI</span>
+                </div>
+                <div id="pay-extra-upi" class="mt-2.5 pt-2.5 border-t border-stone-200/70">
+                  <input type="text" id="checkout-upi-id" placeholder="yourname@okicici / mobile@upi" class="w-full px-3 py-2 rounded-lg bg-white border border-stone-200 text-xs">
+                </div>
+              </label>
+
+              <!-- Option B: Credit / Debit Card -->
+              <label class="cursor-pointer border rounded-xl p-3 block bg-cream/50 has-[:checked]:border-terracotta has-[:checked]:bg-terracotta/5">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <input type="radio" name="payment-method" value="Credit / Debit Card" onchange="togglePaymentFields(this.value)" class="accent-terracotta">
+                    <p class="text-xs font-bold text-slateDeep">Credit / Debit Card (RuPay / Visa / MC)</p>
+                  </div>
+                  <i class="fa-regular fa-credit-card text-stone-500"></i>
+                </div>
+                <div id="pay-extra-card" class="hidden mt-2.5 pt-2.5 border-t border-stone-200/70 grid grid-cols-3 gap-2">
+                  <input type="text" placeholder="Card Number" class="col-span-3 px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-xs">
+                  <input type="text" placeholder="MM/YY" class="col-span-2 px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-xs">
+                  <input type="password" placeholder="CVV" class="px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-xs">
+                </div>
+              </label>
+
+              <!-- Option C: Net Banking -->
+              <label class="cursor-pointer border rounded-xl p-3 block bg-cream/50 has-[:checked]:border-terracotta has-[:checked]:bg-terracotta/5">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <input type="radio" name="payment-method" value="Net Banking" onchange="togglePaymentFields(this.value)" class="accent-terracotta">
+                    <p class="text-xs font-bold text-slateDeep">Net Banking (HDFC, ICICI, SBI, Axis)</p>
+                  </div>
+                  <i class="fa-solid fa-building-columns text-stone-500"></i>
+                </div>
+              </label>
+
+              <!-- Option D: Cash on Delivery -->
+              <label class="cursor-pointer border rounded-xl p-3 block bg-cream/50 has-[:checked]:border-terracotta has-[:checked]:bg-terracotta/5">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <input type="radio" name="payment-method" value="Cash on Delivery (COD)" onchange="togglePaymentFields(this.value)" class="accent-terracotta">
+                    <p class="text-xs font-bold text-slateDeep">Cash / UPI on Delivery (COD)</p>
+                  </div>
+                  <i class="fa-solid fa-indian-rupee-sign text-stone-500"></i>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Order Summary -->
+        <div class="md:col-span-5">
+          <div class="bg-white rounded-2xl p-5 border border-stone-200 sticky top-4 space-y-3">
+            <h3 class="font-display font-bold text-base text-slateDeep border-b border-stone-100 pb-2">Order Summary</h3>
+            <div id="checkout-items-mini" class="max-h-44 overflow-y-auto space-y-2 text-xs">
+              <!-- Populated dynamically -->
+            </div>
+            <div class="border-t border-stone-100 pt-2.5 space-y-1.5 text-xs">
+              <div class="flex justify-between text-stone-500">
+                <span>Items Subtotal</span>
+                <span id="chk-subtotal">₹0</span>
+              </div>
+              <div id="chk-discount-row" class="hidden flex justify-between text-sageDark font-semibold">
+                <span>Voucher Savings</span>
+                <span id="chk-discount">-₹0</span>
+              </div>
+              <div class="flex justify-between text-stone-500">
+                <span>Delivery Fee</span>
+                <span id="chk-delivery">FREE</span>
+              </div>
+              <div class="flex justify-between text-stone-500">
+                <span>Included GST (12%)</span>
+                <span id="chk-gst">₹0</span>
+              </div>
+              <div class="flex justify-between font-semibold text-slateDeep pt-1.5 border-t border-stone-100">
+                <span>Order Total</span>
+                <span id="chk-order-total">₹0</span>
+              </div>
+              <div id="chk-wallet-used-row" class="hidden flex justify-between text-sageDark font-bold">
+                <span>PuffyPaws Wallet Applied</span>
+                <span id="chk-wallet-used">-₹0</span>
+              </div>
+              <div class="flex justify-between font-bold text-base text-slateDeep pt-2 border-t border-stone-200">
+                <span>Balance Payable</span>
+                <span id="chk-grand-total" class="text-terracotta">₹0</span>
+              </div>
+            </div>
+
+            <button onclick="placeOrder()" class="w-full py-3.5 rounded-2xl bg-terracotta hover:bg-terracottaDark text-white font-bold text-sm shadow-md transition-all mt-2">
+              Place Order & Generate Invoice
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 6: PRINTABLE GST TAX INVOICE ==================== -->
+  <div id="invoice-modal" class="fixed inset-0 z-50 hidden bg-slateDeep/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto p-6 sm:p-8 border border-stone-200 shadow-2xl relative">
+      <div class="flex items-center justify-between mb-4 gap-2">
+        <span class="px-3 py-1 rounded-full bg-sage/20 text-sageDark text-xs font-bold">Order Confirmed • Tax Invoice</span>
+        <div class="flex items-center gap-2">
+          <button onclick="handleInvoiceSaveAndEmail()" class="px-3.5 py-1.5 rounded-xl bg-slateDeep text-white text-xs font-semibold hover:bg-slateDeep/90 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-print"></i>
+            <span>Print / Save PDF</span>
+          </button>
+          <button onclick="closeModal('invoice-modal')" class="w-8 h-8 rounded-full bg-sand hover:bg-stone-200 flex items-center justify-center text-slateDeep">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable GST Invoice Content -->
+      <div id="invoice-print-area" class="border border-stone-200 rounded-2xl p-6 text-xs text-slateDeep space-y-4">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+  <script>
+    // =========================================================================
+    // 1. BESPOKE INLINE SVG GRAPHIC ENGINE (100% Guaranteed Crisp Vector Art)
+    // =========================================================================
+    const SPECIES_PALETTES = {
+      Dog:    { bg: '#FBE9E2', primary: '#E07A5F', secondary: '#C86348', badge: '#7C2D12' },
+      Cat:    { bg: '#E6F2EC', primary: '#81B29A', secondary: '#5E9178', badge: '#14532D' },
+      Rabbit: { bg: '#FDF3E1', primary: '#E8A848', secondary: '#C9892B', badge: '#78350F' },
+      Bird:   { bg: '#E6F1F8', primary: '#5A9BD4', secondary: '#3B7BB5', badge: '#1E3A8A' },
+      Fish:   { bg: '#E2F5F3', primary: '#38A3A5', secondary: '#227C7E', badge: '#134E4A' }
+    };
+
+    function getProductGraphicSvg(product, large = false) {
+      const pal = SPECIES_PALETTES[product.species] || SPECIES_PALETTES.Dog;
+      const accent = product.accentColor || pal.primary;
+      const sizeClass = large ? 'w-56 h-56' : 'w-32 h-32';
+      const sub = product.category;
+
+      let shapeSvg = '';
+      if (sub === 'Food') {
+        shapeSvg = `
+          <rect x="44" y="24" width="72" height="96" rx="14" fill="${accent}" />
+          <path d="M44 42 H116" stroke="#FFFFFF" stroke-width="3" stroke-dasharray="5 3" opacity="0.7"/>
+          <rect x="54" y="54" width="52" height="36" rx="8" fill="#FAF8F5" opacity="0.95"/>
+          <circle cx="80" cy="72" r="10" fill="${pal.secondary}" opacity="0.25"/>
+          <path d="M74 74 C74 69, 86 69, 86 74 C86 78, 74 78, 74 74 Z" fill="${accent}"/>
+          <circle cx="74" cy="67" r="2.5" fill="${accent}"/>
+          <circle cx="80" cy="65" r="2.5" fill="${accent}"/>
+          <circle cx="86" cy="67" r="2.5" fill="${accent}"/>
+          <path d="M36 122 L44 108 H116 L124 122 Z" fill="${pal.secondary}" />
+        `;
+      } else if (sub === 'Grooming') {
+        shapeSvg = `
+          <path d="M74 22 H92 L96 28 H70 Z" fill="${pal.secondary}"/>
+          <rect x="77" y="28" width="6" height="12" fill="#3D405B"/>
+          <rect x="52" y="40" width="56" height="82" rx="18" fill="${accent}"/>
+          <rect x="60" y="58" width="40" height="44" rx="10" fill="#FAF8F5" opacity="0.95"/>
+          <path d="M80 68 C87 76, 87 86, 80 90 C73 86, 73 76, 80 68 Z" fill="${accent}"/>
+          <circle cx="118" cy="44" r="6" fill="#FFFFFF" opacity="0.8"/>
+          <circle cx="126" cy="58" r="4" fill="#FFFFFF" opacity="0.7"/>
+          <circle cx="38" cy="52" r="5" fill="#FFFFFF" opacity="0.75"/>
+        `;
+      } else if (sub === 'Toys') {
+        shapeSvg = `
+          <circle cx="80" cy="76" r="42" fill="${accent}"/>
+          <path d="M44 62 Q80 86 116 62" fill="none" stroke="#FAF8F5" stroke-width="5" stroke-linecap="round"/>
+          <path d="M44 90 Q80 66 116 90" fill="none" stroke="#FAF8F5" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="80" cy="76" r="11" fill="${pal.secondary}"/>
+          <polygon points="122,30 125,38 133,38 127,43 129,51 122,46 115,51 117,43 111,38 119,38" fill="#F2CC8F"/>
+        `;
+      } else if (sub === 'Healthcare') {
+        shapeSvg = `
+          <rect x="62" y="24" width="36" height="14" rx="4" fill="#3D405B"/>
+          <rect x="48" y="38" width="64" height="84" rx="14" fill="${accent}"/>
+          <rect x="56" y="54" width="48" height="50" rx="8" fill="#FAF8F5" opacity="0.96"/>
+          <rect x="76" y="65" width="8" height="28" rx="2" fill="${pal.secondary}"/>
+          <rect x="66" y="75" width="28" height="8" rx="2" fill="${pal.secondary}"/>
+          <circle cx="116" cy="112" r="14" fill="#81B29A"/>
+          <path d="M110 112 L114 116 L122 108" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+        `;
+      } else {
+        shapeSvg = `
+          <ellipse cx="80" cy="96" rx="54" ry="26" fill="${accent}"/>
+          <ellipse cx="80" cy="90" rx="42" ry="18" fill="#FAF8F5" opacity="0.92"/>
+          <path d="M52 54 A28 28 0 0 1 108 54" fill="none" stroke="${pal.secondary}" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="80" cy="34" r="10" fill="#F2CC8F"/>
+          <circle cx="80" cy="34" r="4" fill="#3D405B"/>
+        `;
+      }
+
+      const speciesEmoji = { Dog: '🐶', Cat: '🐱', Rabbit: '🐰', Bird: '🦜', Fish: '🐠' }[product.species] || '🐾';
+
+      return `
+        <svg viewBox="0 0 160 150" class="${sizeClass} mx-auto drop-shadow-xs select-none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="8" width="144" height="134" rx="28" fill="${pal.bg}"/>
+          <circle cx="130" cy="28" r="16" fill="#FFFFFF" opacity="0.65"/>
+          ${shapeSvg}
+          <text x="130" y="34" text-anchor="middle" font-size="16">${speciesEmoji}</text>
+        </svg>
+      `;
+    }
+
+    // =========================================================================
+    // 2. COMPREHENSIVE 125-PRODUCT CATALOG (5 SPECIES × 5 CATEGORIES × 5 ITEMS)
+    // =========================================================================
+    const CATALOG_BLUEPRINT = {
+      Dog: {
+        Food: [
+          { name: 'Himalayan Chicken & Brown Rice Kibble', price: 649, accent: '#E07A5F', desc: 'Slow-cooked farm chicken with wholesome brown rice, pumpkin, and prebiotics for gentle Indian digestion.', sizes: ['1.2 kg', '3 kg (+₹750)', '10 kg (+₹2,800)'], variants: ['Adult Medium/Large', 'Puppy Starter', 'Small Breed'] },
+          { name: 'Turmeric & Mutton Gravy Pouches (Pack of 6)', price: 399, accent: '#D96B43', desc: 'Tender slow-braised mutton chunks in golden turmeric broth to boost immunity and hydration.', sizes: ['6 × 100g', '12 × 100g (+₹360)'], variants: ['Mutton & Pumpkin', 'Chicken & Sweet Potato'] },
+          { name: 'Peanut Butter & Oats Crunch Biscuits', price: 249, accent: '#C97B4B', desc: 'Oven-baked gluten-free training treats made with roasted Indian peanuts and rolled oats.', sizes: ['250 g', '500 g (+₹190)'], variants: ['Classic Peanut', 'Banana & Honey'] },
+          { name: 'Dehydrated Sardine & Omega Jerky Strips', price: 329, accent: '#E08E5F', desc: 'Single-ingredient coastal sardines air-dried to lock in natural Omega-3 for a glossy coat.', sizes: ['150 g', '300 g (+₹280)'], variants: ['Whole Fillets', 'Bite-Sized'] },
+          { name: 'Puppy Goat Milk & Colostrum Weaning Powder', price: 549, accent: '#D88C6A', desc: 'Easy-to-digest probiotic milk replacer enriched with DHA for growing pups.', sizes: ['300 g Jar', '600 g Jar (+₹450)'], variants: ['Vanilla Bean', 'Unflavored Pure'] }
+        ],
+        Grooming: [
+          { name: 'Neem & Colloidal Oatmeal Soothing Shampoo', price: 349, accent: '#679880', desc: 'pH-balanced anti-itch botanical cleanser formulated for tropical humidity and sensitive skin.', sizes: ['250 ml', '500 ml (+₹260)'], variants: ['Neem & Oatmeal', 'Aloe & Chamomile'] },
+          { name: 'Kokum Butter & Beeswax Paw Rescue Balm', price: 279, accent: '#E07A5F', desc: '100% lick-safe organic balm that heals cracked paw pads from hot Indian pavements.', sizes: ['50 g Tin', '100 g Tin (+₹190)'], variants: ['Unscented Natural', 'Lavender Calm'] },
+          { name: 'Bamboo Pin Detangling & Deshedding Brush', price: 429, accent: '#B87A56', desc: 'Ergonomic bamboo slicker brush with rounded tips that gently lifts loose undercoat fur.', sizes: ['Medium', 'Large (+₹90)'], variants: ['Short Coat', 'Double/Long Coat'] },
+          { name: 'Waterless Lemongrass Dry Bath Foam', price: 319, accent: '#81B29A', desc: 'No-rinse foaming cleanser for quick post-walk freshening during monsoon days.', sizes: ['200 ml', '400 ml (+₹240)'], variants: ['Lemongrass Mist', 'Coconut Breeze'] },
+          { name: 'Ear & Tear-Stain Witch Hazel Wipes (80 Ct)', price: 229, accent: '#79A391', desc: 'Biodegradable plant-fiber wipes infused with chamomile to keep ears and eyes spotless.', sizes: ['80 Wipes', '160 Wipes (+₹180)'], variants: ['Chamomile Gentle', 'Aloe Fresh'] }
+        ],
+        Toys: [
+          { name: 'Natural Rubber Treat-Dispensing Chew Bone', price: 379, accent: '#E07A5F', desc: 'Non-toxic bounce rubber bone stuffed with grooves for peanut butter enrichment.', sizes: ['Small (12 cm)', 'Large (18 cm) (+₹120)'], variants: ['Terracotta', 'Sage Green'] },
+          { name: 'Hand-Braided Organic Cotton Tug Rope', price: 259, accent: '#D68C5C', desc: 'Durable 3-knot cotton rope that naturally flosses teeth during interactive tug-of-war.', sizes: ['Medium', 'XL Heavy Duty (+₹110)'], variants: ['Earth Mix', 'Sunset Coral'] },
+          { name: 'Crinkle Plush Elephant with Hidden Squeaker', price: 349, accent: '#81B29A', desc: 'Double-stitched soft velveteen elephant designed for gentle cuddling and fetch.', sizes: ['Standard', 'Jumbo (+₹140)'], variants: ['Pastel Grey', 'Warm Ochre'] },
+          { name: 'Interactive Snuffle Forage Mat', price: 699, accent: '#C86348', desc: 'Multi-layered fleece puzzle mat that slows down fast eaters and stimulates natural sniffing.', sizes: ['50 × 50 cm', '75 × 50 cm (+₹250)'], variants: ['Meadow Patch', 'Autumn Leaves'] },
+          { name: 'Glow-in-the-Dark High-Bounce Fetch Ball', price: 299, accent: '#E59866', desc: 'Puncture-resistant TPR ball ideal for evening park sessions.', sizes: ['6.5 cm', '8 cm (+₹70)'], variants: ['Coral Glow', 'Mint Glow'] }
+        ],
+        Healthcare: [
+          { name: 'Hip & Joint Glucosamine + Turmeric Chews', price: 599, accent: '#5E9178', desc: 'Vet-formulated mobility soft chews with MSM and curcumin for active and senior dogs.', sizes: ['60 Chews', '120 Chews (+₹490)'], variants: ['Chicken Flavor', 'Smoky Peanut'] },
+          { name: 'Gut-Guard Probiotic & Pumpkin Digestive Powder', price: 449, accent: '#E07A5F', desc: '5 billion CFU multi-strain probiotics to restore healthy stool and immunity.', sizes: ['100 g', '200 g (+₹350)'], variants: ['Pumpkin Blend', 'Curd & Prebiotic'] },
+          { name: 'Tick & Flea Cedarwood Herbal Spot-On Drops', price: 389, accent: '#679880', desc: 'Chemical-free essential oil defense against ticks, fleas, and mosquitoes.', sizes: ['Pack of 3 Pipettes', 'Pack of 6 (+₹320)'], variants: ['Up to 10 kg', '10–25 kg', '25+ kg'] },
+          { name: 'Calming Ashwagandha & Chamomile Drops', price: 479, accent: '#81B29A', desc: 'Soothing herbal tincture for Diwali fireworks, travel anxiety, and vet visits.', sizes: ['30 ml Dropper', '60 ml Dropper (+₹360)'], variants: ['Original Herbal', 'Honey Infusion'] },
+          { name: 'Salmon & Flaxseed Skin Coat Omega Syrup', price: 529, accent: '#D97B54', desc: 'Cold-pressed EPA/DHA liquid supplement that reduces excessive shedding in 3 weeks.', sizes: ['250 ml', '500 ml (+₹410)'], variants: ['Wild Salmon', 'Plant Flaxseed'] }
+        ],
+        Accessories: [
+          { name: 'Orthopedic Memory Foam Bolster Dog Bed', price: 1499, accent: '#E07A5F', desc: 'Washable linen-cotton cover over joint-supporting memory foam with cozy side bolsters.', sizes: ['Medium (75 cm)', 'Large (95 cm) (+₹500)'], variants: ['Warm Terracotta', 'Sage Olive'] },
+          { name: 'No-Pull Padded Corduroy Chest Harness', price: 649, accent: '#81B29A', desc: 'Breathable mesh-lined harness with dual D-rings and reflective night stitching.', sizes: ['Small', 'Medium (+₹50)', 'Large (+₹100)'], variants: ['Terracotta', 'Slate Blue'] },
+          { name: 'Engraved Solid Brass Paw ID Tag', price: 249, accent: '#D49A42', desc: 'Heavy-duty silent brass nameplate custom-stamped with your dog’s name & phone number.', sizes: ['25 mm Round', '32 mm Bone (+₹40)'], variants: ['Antique Brass', 'Rose Copper'] },
+          { name: 'Elevated Ceramic Slow-Feeder Bowl Set', price: 899, accent: '#C86348', desc: 'Lead-free stoneware bowls on a teakwood stand to prevent neck strain and bloat.', sizes: ['Twin 400 ml', 'Twin 750 ml (+₹250)'], variants: ['Cream Speckle', 'Terracotta Matte'] },
+          { name: 'Portable Travel Water Bottle with Activated Filter', price: 459, accent: '#5E9178', desc: 'Leak-proof one-hand push dispenser for road trips and daily walks.', sizes: ['350 ml', '550 ml (+₹90)'], variants: ['Sage Mist', 'Peach Sand'] }
+        ]
+      },
+      Cat: {
+        Food: [
+          { name: 'Ocean Tuna & Pumpkin Grain-Free Dry Food', price: 599, accent: '#81B29A', desc: 'High-protein wild tuna kibble enriched with taurine, cranberries, and hairball-control fiber.', sizes: ['1.2 kg', '3 kg (+₹720)'], variants: ['Adult Indoor', 'Kitten Growth'] },
+          { name: 'Shredded Salmon in Bone Broth Pouches (Pack of 8)', price: 449, accent: '#E07A5F', desc: 'Hydrating real salmon flakes in savory broth to support feline urinary tract health.', sizes: ['8 × 70g', '16 × 70g (+₹410)'], variants: ['Salmon & Shrimp', 'Chicken & Tuna'] },
+          { name: 'Creamy Lickable Mackerel Puree Tubes (10 Sticks)', price: 299, accent: '#679880', desc: 'Irresistible hand-fed moisture-rich purée treats enriched with Vitamin E and taurine.', sizes: ['10 Sticks', '20 Sticks (+₹250)'], variants: ['Mackerel & Scallop', 'Tuna & Salmon'] },
+          { name: 'Freeze-Dried Chicken Breast Cube Treats', price: 349, accent: '#D88C6A', desc: '100% pure freeze-dried lean chicken cubes with zero grains, fillers, or preservatives.', sizes: ['60 g Tub', '120 g Tub (+₹290)'], variants: ['Pure Chicken', 'Chicken & Catnip'] },
+          { name: 'Sprouted Organic Wheatgrass Cat Grass Kit', price: 199, accent: '#5E9178', desc: 'Ready-to-grow hydroponic indoor grass planter that aids natural hairball digestion.', sizes: ['Single Planter', 'Twin Pack (+₹150)'], variants: ['Oat & Wheatgrass', 'Barley Grass'] }
+        ],
+        Grooming: [
+          { name: 'Tofu & Green Tea Flushable Clumping Cat Litter', price: 549, accent: '#81B29A', desc: '99.9% dust-free plant-based pea-fiber litter that clumps in 3 seconds and neutralizes odor.', sizes: ['6 L (2.5 kg)', '12 L (5 kg) (+₹480)'], variants: ['Green Tea', 'Unscented Original'] },
+          { name: 'Silicone Steam-Mist Deshedding Cat Comb', price: 379, accent: '#E07A5F', desc: 'Gentle soothing mist brush that removes loose fur while massaging your cat’s skin.', sizes: ['Standard'], variants: ['Sage Green', 'Blush Coral'] },
+          { name: 'Waterless Aloe & Chamomile Purr-Fresh Foam', price: 299, accent: '#679880', desc: 'Stress-free no-rinse cleansing mousse safe for cats that groom themselves.', sizes: ['150 ml', '300 ml (+₹220)'], variants: ['Fragrance-Free', 'Soft Chamomile'] },
+          { name: 'Precision Safety-Guard Cat Claw Trimmer', price: 249, accent: '#C86348', desc: 'Angled stainless-steel micro-blades with built-in quick guard for painless nail trims.', sizes: ['Standard'], variants: ['Pastel Mint', 'Terracotta'] },
+          { name: 'Bentonite & Activated Charcoal Odor Booster', price: 269, accent: '#5E9178', desc: 'Natural coconut-shell carbon granules that extend litter box freshness by 2 weeks.', sizes: ['450 g Bottle', '900 g (+₹210)'], variants: ['Unscented Carbon', 'Lavender Hint'] }
+        ],
+        Toys: [
+          { name: 'Organic Darjeeling Catnip & Silvervine Mice (3 Pc)', price: 249, accent: '#81B29A', desc: 'Hand-stitched linen mice stuffed with potent silvervine gall fruit for zoomie playtime.', sizes: ['Pack of 3', 'Pack of 6 (+₹190)'], variants: ['Earth Linen', 'Pastel Trio'] },
+          { name: 'Telescopic Pheasant Feather Teaser Wand', price: 289, accent: '#E07A5F', desc: 'Flexible carbon-fiber wand with fluttering natural feathers and a gentle brass bell.', sizes: ['Standard Wand'], variants: ['Feather Refill +2', 'Feather Refill +5 (+₹120)'] },
+          { name: 'Corrugated Cardboard Lounge Scratcher Sofa', price: 599, accent: '#C9892B', desc: 'High-density reversible honeycomb scratcher that protects your sofas and doubles as a bed.', sizes: ['Standard (48 cm)', 'XL Lounger (62 cm) (+₹220)'], variants: ['Kraft Wood', 'Terracotta Print'] },
+          { name: '3-Tier Bamboo Tower Track Ball Roller', price: 499, accent: '#679880', desc: 'Smooth solid bamboo track with spinning wooden balls for solo indoor hunting.', sizes: ['3-Tier'], variants: ['Natural Bamboo'] },
+          { name: 'Motion-Activated Chirping Sparrow Plush', price: 429, accent: '#D97B54', desc: 'Touch-triggered realistic bird chirps with USB-rechargeable motor inside soft fleece.', sizes: ['Standard'], variants: ['Brown Sparrow', 'Robin Red'] }
+        ],
+        Healthcare: [
+          { name: 'Malt & Slippery Elm Hairball Relief Paste', price: 369, accent: '#81B29A', desc: 'Tasty malt gel that gently lubricates ingested fur through the digestive tract.', sizes: ['75 g Tube', '150 g Tube (+₹290)'], variants: ['Salmon Malt', 'Chicken Malt'] },
+          { name: 'Cranberry & D-Mannose Urinary Tract Drops', price: 459, accent: '#E07A5F', desc: 'Supports healthy bladder pH and kidney function in indoor neutered/spayed cats.', sizes: ['50 ml Bottle', '100 ml (+₹360)'], variants: ['Tuna Drop', 'Unflavored'] },
+          { name: 'L-Lysine & Colostrum Immune Defense Chews', price: 489, accent: '#679880', desc: 'Daily respiratory and eye health support for kittens and multi-cat households.', sizes: ['60 Chews', '120 Chews (+₹390)'], variants: ['Ocean Fish', 'Roast Chicken'] },
+          { name: 'Feline Pheromone Calming Diffuser & Refill', price: 799, accent: '#5E9178', desc: 'Drug-free synthetic facial pheromones to reduce scratching, spraying, and stress.', sizes: ['Diffuser + 48ml', 'Twin Refill (+₹650)'], variants: ['30-Day Kit'] },
+          { name: 'Seaweed & Mint Dental Plaque Off Powder', price: 349, accent: '#79A391', desc: 'Sprinkle over wet food to soften tartar and freshen kitty breath effortlessly.', sizes: ['60 g Jar', '120 g Jar (+₹280)'], variants: ['Kelp Natural'] }
+        ],
+        Accessories: [
+          { name: 'Cozy Felt Cave Cocoon Cat Bed', price: 1199, accent: '#81B29A', desc: 'Hand-felted Merino wool-blend igloo dome that keeps cats warm and secure.', sizes: ['Medium (42 cm)', 'Large (50 cm) (+₹300)'], variants: ['Sage Heather', 'Warm Oatmeal'] },
+          { name: 'Breakaway Velvet Collar with Engraved Heart Tag', price: 279, accent: '#E07A5F', desc: 'Safety quick-release buckle collar with custom-engraved stainless steel ID charm.', sizes: ['Adjustable 20–30 cm'], variants: ['Terracotta', 'Dusty Rose', 'Mint'] },
+          { name: 'Whisker-Friendly Tilted Ceramic Feeding Bowl', price: 449, accent: '#C86348', desc: 'Shallow wide-rim stoneware dish angled at 15° to prevent whisker fatigue and reflux.', sizes: ['Single Bowl', 'Twin Set (+₹380)'], variants: ['Cream Glaze', 'Sage Speckle'] },
+          { name: 'Collapsible Pop-Up Mesh Cat Play Tunnel', price: 549, accent: '#679880', desc: 'Crinkle-lined 3-way adventure tunnel with dangling peephole pom-pom.', sizes: ['120 cm Length'], variants: ['Forest Cream', 'Terracotta Stripes'] },
+          { name: 'Suction-Cup Sunny Window Hammock Perch', price: 899, accent: '#D49A42', desc: 'Industrial suction cups supporting up to 18 kg for afternoon bird-watching naps.', sizes: ['55 × 35 cm'], variants: ['Quilted Linen', 'Plush Fleece'] }
+        ]
+      },
+      Rabbit: {
+        Food: [
+          { name: 'First-Cut Sun-Cured Himalayan Timothy Hay', price: 449, accent: '#E8A848', desc: 'High-fiber, low-calcium fragrant green hay essential for bunny dental wear and gut motility.', sizes: ['1 kg Bale', '2.5 kg Bale (+₹520)', '5 kg Box (+₹1,150)'], variants: ['1st Cut High Fiber', '2nd Cut Leafy Soft'] },
+          { name: 'Alfalfa & Marigold Junior Bunny Pellets', price: 379, accent: '#81B29A', desc: 'Cold-pressed timothy & marigold flower pellets fortified with Vitamin D3 and zero corn.', sizes: ['1 kg', '2.5 kg (+₹450)'], variants: ['Adult Bunny', 'Baby Bunny (<6m)'] },
+          { name: 'Dried Rose Petals, Hibiscus & Chamomile Forage', price: 249, accent: '#E07A5F', desc: 'Edible botanical salad topper hand-harvested in Pushkar for natural enrichment.', sizes: ['120 g Pouch', '250 g Pouch (+₹190)'], variants: ['Floral Meadow', 'Herb Garden'] },
+          { name: 'Baked Papaya & Pineapple Digestive Drops', price: 229, accent: '#C9892B', desc: 'Natural bromelain fruit enzymes that prevent wool-block and hairballs in rabbits.', sizes: ['100 g Jar', '200 g Jar (+₹180)'], variants: ['Papaya Crunch', 'Apple & Carrot'] },
+          { name: 'Pressed Dandelion & Oat Hay Cubes (12 Pack)', price: 269, accent: '#679880', desc: 'Compact crunchy hay blocks that keep bunnies busy chewing for hours.', sizes: ['12 Cubes', '24 Cubes (+₹220)'], variants: ['Dandelion Root', 'Chamomile Hay'] }
+        ],
+        Grooming: [
+          { name: 'Soft Boar-Bristle & Rubber Bunny Grooming Mitt', price: 279, accent: '#E8A848', desc: 'Ultra-gentle palm brush designed for delicate rabbit skin during molting season.', sizes: ['One Size'], variants: ['Warm Sand', 'Sage'] },
+          { name: 'Waterless Cornstarch & Chamomile Bunny Bath Powder', price: 299, accent: '#81B29A', desc: 'Safe dry-grooming powder since rabbits should never be submerged in water.', sizes: ['150 g Shaker', '300 g (+₹210)'], variants: ['Chamomile Calm', 'Unscented'] },
+          { name: 'Rounded-Tip Small Animal Nail Clippers', price: 219, accent: '#E07A5F', desc: 'Precision mini-shears tailored for bunny dewclaws and hind nails.', sizes: ['Standard'], variants: ['Pastel Peach', 'Mint'] },
+          { name: 'Recycled Paper Odor-Control Litter Pellets', price: 399, accent: '#679880', desc: '99% dust-free absorbent paper pellets safe for sensitive bunny respiratory systems.', sizes: ['5 L Bag', '10 L Bag (+₹340)'], variants: ['Natural Unscented'] },
+          { name: 'Organic Coconut & Calendula Sore-Hock Balm', price: 259, accent: '#C9892B', desc: 'Soothing plant butter to protect delicate hind heels on indoor flooring.', sizes: ['40 g Tin'], variants: ['Calendula Pure'] }
+        ],
+        Toys: [
+          { name: 'Orchard Apple-Wood Chew Sticks Bundle (25 Pc)', price: 229, accent: '#C9892B', desc: 'Pesticide-free sun-dried apple twigs that keep continuously growing teeth trimmed.', sizes: ['250 g Bundle', '500 g Bundle (+₹180)'], variants: ['Plain Apple Wood', 'Dipped in Timothy Dust'] },
+          { name: 'Hand-Woven Seagrass & Water Hyacinth Play Ball', price: 249, accent: '#81B29A', desc: '100% edible woven natural grass sphere stuffed with fragrant mountain hay.', sizes: ['10 cm Ball', 'Twin Pack (+₹190)'], variants: ['Seagrass', 'Hyacinth'] },
+          { name: 'Woven Willow Chew Tunnel & Hideout', price: 549, accent: '#E8A848', desc: 'Expandable edible willow branch tunnel satisfying natural burrowing instincts.', sizes: ['38 cm Tunnel', '55 cm Tunnel (+₹220)'], variants: ['Natural Willow'] },
+          { name: 'Loofah & Carrot Rattan Hanging Chew Mobile', price: 279, accent: '#E07A5F', desc: 'Vegetable-dyed natural loofah slices and rattan balls for cage or pen hanging.', sizes: ['Standard'], variants: ['Carrot & Corn', 'Berry & Flower'] },
+          { name: 'Bamboo Treat-Rolling Logic Puzzle Cylinder', price: 349, accent: '#679880', desc: 'Roll-and-drop wooden enrichment toy for pellets and dried herbs.', sizes: ['Standard'], variants: ['Natural Bamboo'] }
+        ],
+        Healthcare: [
+          { name: 'Papaya Enzyme & Bromelain Hairball Tablets', price: 349, accent: '#E8A848', desc: 'Chewable fruit-enzyme tablets supporting healthy GI motility during shedding.', sizes: ['60 Tablets', '120 Tablets (+₹280)'], variants: ['Papaya-Pineapple'] },
+          { name: 'Critical Care Herbivore Recovery Mash Powder', price: 599, accent: '#679880', desc: 'Vet-recommended high-fiber syringe-feed formula for bunnies recovering from GI stasis.', sizes: ['140 g Pouch', '300 g Pouch (+₹490)'], variants: ['Anise & Timothy', 'Apple-Banana'] },
+          { name: 'Natural Vitamin C & Echinacea Immunity Drops', price: 329, accent: '#E07A5F', desc: 'Liquid water-bottle supplement boosting resistance during seasonal weather shifts.', sizes: ['60 ml Bottle'], variants: ['Sweet Orange'] },
+          { name: 'Probiotic Gut-Flora Balance Paste for Rabbits', price: 389, accent: '#81B29A', desc: 'Calibrated dial syringe paste to stabilize cecal flora after antibiotic courses.', sizes: ['15 ml Syringe', 'Twin Pack (+₹320)'], variants: ['Herbal Mint'] },
+          { name: 'Neem & Lemongrass Hutch & Bedding Mist', price: 269, accent: '#5E9178', desc: 'Bunny-safe herbal spray that deters mites and keeps wooden hutches fresh.', sizes: ['250 ml Spray'], variants: ['Lemongrass'] }
+        ],
+        Accessories: [
+          { name: 'Corner Litter Tray with Removable Hay Rack', price: 649, accent: '#81B29A', desc: '2-in-1 wooden hay feeder and easy-clean litter pan encouraging natural toilet habits.', sizes: ['Standard (38 cm)', 'Large (48 cm) (+₹220)'], variants: ['Natural Pine', 'Sage Wash'] },
+          { name: 'No-Drip Glass Sipper Water Bottle (500 ml)', price: 349, accent: '#5A9BD4', desc: 'Chew-proof stainless steel double-ball spout with chew-guard glass reservoir.', sizes: ['350 ml', '500 ml (+₹70)'], variants: ['Clear Glass'] },
+          { name: 'Tip-Proof Heavy Stoneware Bunny Pellet Bowl', price: 299, accent: '#E8A848', desc: 'Thick glazed ceramic crock that playful bunnies cannot flip over.', sizes: ['13 cm Bowl', '16 cm Bowl (+₹80)'], variants: ['Cream Carrot', 'Terracotta'] },
+          { name: 'Plush Fleece Snuggle Tunnel & Washable Pee Pad', price: 599, accent: '#E07A5F', desc: 'Ultra-soft fleece hideout bed with waterproof absorbent base layer.', sizes: ['Medium', 'Large (+₹180)'], variants: ['Oatmeal Cream', 'Blush Sage'] },
+          { name: 'Breathable Mesh Bunny Harness & Elastic Leash', price: 379, accent: '#679880', desc: 'Escape-proof figure-8 soft vest harness for supervised garden exploration.', sizes: ['Small (<1.5 kg)', 'Medium (1.5–3 kg)'], variants: ['Sage Green', 'Soft Coral'] }
+        ]
+      },
+      Bird: {
+        Food: [
+          { name: 'Organic Foxtail & Kangni Millet Spray Stalks', price: 249, accent: '#5A9BD4', desc: 'Sun-ripened whole millet sprays loved by Budgies, Cockatiels, Lovebirds, and Finches.', sizes: ['250 g Pack', '500 g Pack (+₹210)'], variants: ['Golden Kangni', 'Red & Yellow Mix'] },
+          { name: '7-Seed & Dehydrated Fruit Parakeet Feast', price: 349, accent: '#E8A848', desc: 'Dust-free blend of canary seed, safflower, flax, papaya, and spirulina pellets.', sizes: ['800 g Jar', '2 kg Bag (+₹420)'], variants: ['Budgie & Lovebird', 'Cockatiel & Conure'] },
+          { name: 'Sprouting Mung, Lentil & Quinoa Soak Mix', price: 279, accent: '#81B29A', desc: 'Living enzyme-rich sprouting seeds packed with amino acids for breeding & molting birds.', sizes: ['500 g', '1 kg (+₹220)'], variants: ['Daily Sprout Blend'] },
+          { name: 'Honey & Almond Baked Seed Bell Treat (2 Pc)', price: 199, accent: '#D49A42', desc: 'Hangs inside the aviary to encourage natural beak foraging and exercise.', sizes: ['2 Bells', '4 Bells (+₹160)'], variants: ['Honey & Sesame', 'Berry & Nut'] },
+          { name: 'Hand-Feeding Baby Bird Formula with Probiotics', price: 499, accent: '#E07A5F', desc: 'Smooth digestible crop-safe rearing formula for orphaned or weaning chicks.', sizes: ['350 g Tin', '700 g Tin (+₹420)'], variants: ['All Psittacines'] }
+        ],
+        Grooming: [
+          { name: 'Aloe Vera & Chamomile Feather Shine Bath Mist', price: 269, accent: '#5A9BD4', desc: 'Fine-mist spray that soothes dry pin-feathers and restores iridescent plumage.', sizes: ['200 ml Mist'], variants: ['Aloe Pure'] },
+          { name: 'Clip-On Transparent Aviary Splash Bath Tub', price: 329, accent: '#38A3A5', desc: 'No-spill hooded bathing box that hooks securely onto standard cage doors.', sizes: ['Medium', 'Large (+₹90)'], variants: ['Sky Tint', 'Clear Frost'] },
+          { name: 'Natural Pumice & Calcium Beak-Trim Perch', price: 289, accent: '#E8A848', desc: 'Textured mineral perch that naturally files overgrown nails and conditions beaks.', sizes: ['20 cm', '28 cm (+₹70)'], variants: ['Sandstone', 'Pastel Blue'] },
+          { name: 'Precision Curved Avian Nail Scissors', price: 229, accent: '#3B7BB5', desc: 'Lightweight stainless steel micro-scissors for safe wing and claw maintenance.', sizes: ['Standard'], variants: ['Slate Blue'] },
+          { name: 'Eucalyptus & Neem Cage Tray Odor Eliminator', price: 259, accent: '#679880', desc: 'Bird-safe plant enzyme spray that keeps perches and tray liners spotless.', sizes: ['250 ml'], variants: ['Fresh Eucalyptus'] }
+        ],
+        Toys: [
+          { name: 'Natural Java Wood Swing with Brass Bell', price: 299, accent: '#5A9BD4', desc: 'Hand-crafted coffee-wood swing with vegetable-dyed wooden beads and chime.', sizes: ['Small (15 cm)', 'Medium (22 cm) (+₹80)'], variants: ['Ocean Beads', 'Sunset Beads'] },
+          { name: 'Shreddable Sola Wood & Loofah Foraging Piñata', price: 349, accent: '#E8A848', desc: 'Soft Indian shola pith blocks that satisfy chewing instincts and prevent feather plucking.', sizes: ['Standard'], variants: ['Sola Flower', 'Bamboo Star'] },
+          { name: '7-Step Flexible Coconut Rope Climbing Ladder', price: 329, accent: '#C9892B', desc: 'Natural coconut-coir rungs connecting perches for daily acrobatic exercise.', sizes: ['40 cm', '60 cm (+₹110)'], variants: ['Natural Coir'] },
+          { name: 'Acrylic Spinning Wheel Foraging Puzzle', price: 449, accent: '#3B7BB5', desc: 'Clear rotating chamber where birds turn compartments to retrieve millet treats.', sizes: ['13 cm Wheel'], variants: ['Crystal Clear'] },
+          { name: 'Cotton Boing Spiral Bungee Perch', price: 379, accent: '#E07A5F', desc: 'Bouncy coiled rope spiral that builds balance and foot grip strength.', sizes: ['Small', 'Large (+₹120)'], variants: ['Rainbow Pastel', 'Earth Cream'] }
+        ],
+        Healthcare: [
+          { name: 'Natural Sun-Dried Cuttlefish Bone (Pack of 4)', price: 199, accent: '#5A9BD4', desc: '100% pure marine calcium source with cage clips for strong eggshells and bones.', sizes: ['4 Pieces', '8 Pieces (+₹160)'], variants: ['Natural Marine'] },
+          { name: 'Avian Multivitamin & Amino Acid Molting Drops', price: 349, accent: '#E8A848', desc: 'Water-soluble B-complex, Vitamin A & D3 drops for vibrant plumage during molts.', sizes: ['50 ml Dropper'], variants: ['Citrus Drop'] },
+          { name: 'Mineral & Iodine Clay Pecking Block', price: 179, accent: '#E07A5F', desc: 'Essential trace minerals and crushed oyster shell for digestive grit.', sizes: ['Pack of 2', 'Pack of 4 (+₹140)'], variants: ['Pink Mineral'] },
+          { name: 'Avian Probiotic & Electrolyte Stress Recovery', price: 329, accent: '#679880', desc: 'Restores gut balance during heatwaves, travel, or new home transitions.', sizes: ['100 g Jar'], variants: ['Unflavored'] },
+          { name: 'Herbal Feather-Mite & Lice Guard Spray', price: 299, accent: '#3B7BB5', desc: 'Gentle pyrethrin-free botanical mist safe for direct plumage application.', sizes: ['150 ml'], variants: ['Botanical Clean'] }
+        ],
+        Accessories: [
+          { name: 'Forked Natural Neem Wood Branch Perch (Set of 2)', price: 319, accent: '#679880', desc: 'Varying natural branch diameters prevent bumblefoot and exercise bird feet.', sizes: ['20–25 cm', '30–35 cm (+₹90)'], variants: ['Wild Neem Bark'] },
+          { name: 'No-Mess Hooded Seed Catcher Feeder Cup', price: 279, accent: '#5A9BD4', desc: 'Keeps empty seed hulls inside the dispenser so floors around the cage stay clean.', sizes: ['Single Cup', 'Twin Pack (+₹230)'], variants: ['Clear Acrylic'] },
+          { name: 'Cozy Fleece Snuggle Tent Hut for Sleep', price: 369, accent: '#E07A5F', desc: 'Reinforced-base soft flannel sleeping tent for chilly winter nights.', sizes: ['Small (Budgie)', 'Medium (Conure) (+₹80)'], variants: ['Sage Leaf', 'Warm Terracotta'] },
+          { name: 'Stainless Steel Twin Coop Cup Bowls with Clamp', price: 299, accent: '#3B7BB5', desc: 'Rust-proof hygienic bowls for separate dry seed and fresh fruit chop.', sizes: ['150 ml × 2', '300 ml × 2 (+₹100)'], variants: ['Brushed Steel'] },
+          { name: 'Breathable Night-Time Blackout Cage Cover', price: 549, accent: '#3D405B', desc: 'Blocks drafts and ambient light to ensure 10–12 hours of uninterrupted avian sleep.', sizes: ['Medium Cage', 'Large Cage (+₹180)'], variants: ['Slate Navy', 'Forest Sage'] }
+        ]
+      },
+      Fish: {
+        Food: [
+          { name: 'Spirulina & Astaxanthin Color-Enhancing Pellets', price: 279, accent: '#38A3A5', desc: 'Slow-sinking micro-pellets that bring out vibrant reds and blues without clouding water.', sizes: ['100 g Jar', '250 g Jar (+₹240)'], variants: ['0.8 mm Micro (Tetras/Guppies)', '1.5 mm Medium (Goldfish)'] },
+          { name: 'Betta Splendens High-Protein Bug & Shrimp Bites', price: 249, accent: '#E07A5F', desc: 'Floating insect-larvae and krill granules tailored for Labyrinth surface feeders.', sizes: ['45 g Jar', '100 g Jar (+₹190)'], variants: ['Betta Micro-Pellets'] },
+          { name: 'Freeze-Dried Bloodworms & Brine Shrimp Feast', price: 299, accent: '#C86348', desc: 'Gamma-irradiated parasite-free natural protein treat for tropical and Discus fish.', sizes: ['30 g Cube Tin', '75 g Tin (+₹280)'], variants: ['Bloodworms', 'Brine Shrimp Cubes'] },
+          { name: 'Sinking Algae & Kelp Wafers for Plecos & Shrimp', price: 269, accent: '#679880', desc: 'Dense spirulina-rich discs that hold their shape for bottom-dwelling catfish and snails.', sizes: ['80 g Pouch', '200 g Pouch (+₹230)'], variants: ['Spirulina Kelp'] },
+          { name: '7-Day Weekend Slow-Release Vacation Feeder Blocks', price: 189, accent: '#5A9BD4', desc: 'Dissolves gradually to dispense nutritious micro-pellets while you travel.', sizes: ['Pack of 4 Blocks', 'Pack of 8 (+₹150)'], variants: ['3-Day Mini', '7-Day Standard'] }
+        ],
+        Grooming: [
+          { name: 'Instant Chlorine & Heavy-Metal Water Conditioner', price: 299, accent: '#38A3A5', desc: 'Neutralizes tap-water chlorine, chloramines, and ammonia while adding Aloe slime-coat protection.', sizes: ['120 ml', '250 ml (+₹210)', '500 ml (+₹390)'], variants: ['Aloe Coat Formula'] },
+          { name: 'Live Nitrifying Bio-Starter Bacteria Culture', price: 399, accent: '#679880', desc: 'Establishes safe biological filtration in new tanks and prevents New Tank Syndrome.', sizes: ['120 ml', '250 ml (+₹290)'], variants: ['Freshwater Cycle'] },
+          { name: 'Crystal-Clear Bio-Flocculant Water Clarifier', price: 279, accent: '#5A9BD4', desc: 'Binds microscopic suspended particles so your filter clears cloudy green water in 3 hours.', sizes: ['120 ml', '250 ml (+₹200)'], variants: ['Plant & Shrimp Safe'] },
+          { name: 'Floating Magnetic Glass Algae Scrubber', price: 349, accent: '#227C7E', desc: 'Scratch-free felt & micro-hook magnets that clean aquarium glass without wetting your hands.', sizes: ['Small (<6 mm glass)', 'Medium (<10 mm) (+₹120)'], variants: ['Teal & White'] },
+          { name: 'Siphon Gravel Vacuum & Water-Change Pump', price: 379, accent: '#38A3A5', desc: 'Easy hand-squeeze priming bulb with debris guard to clean substrate effortlessly.', sizes: ['1.7 m Hose', '2.5 m Hose (+₹90)'], variants: ['Standard Nozzle'] }
+        ],
+        Toys: [
+          { name: 'Hand-Crafted Terracotta Cichlid & Betta Cave', price: 279, accent: '#E07A5F', desc: 'Breathable unglazed clay hideout that reduces territorial stress and anchors live moss.', sizes: ['Single Dome', 'Triple Stack (+₹220)'], variants: ['Natural Clay'] },
+          { name: 'Floating Betta Exercise Mirror & Resting Leaf', price: 229, accent: '#81B29A', desc: 'Naturalistic Indian Almond leaf hammock plus 5-minute flare mirror for fin exercise.', sizes: ['Twin Set'], variants: ['Anubias Leaf'] },
+          { name: 'Natural Malaysian Driftwood Bonsai Scape Piece', price: 549, accent: '#B87A56', desc: 'Pre-soaked tannin-rich driftwood branch ready for Java Fern and Anubias aquascaping.', sizes: ['15–20 cm', '25–30 cm (+₹250)'], variants: ['Bonsai Twist'] },
+          { name: 'Silicone Glowing Coral & Anemone Sway Ornament', price: 299, accent: '#38A3A5', desc: 'Soft fish-safe silicone flora that sways gracefully in filter currents.', sizes: ['12 cm', '18 cm (+₹90)'], variants: ['Seafoam Teal', 'Coral Pink'] },
+          { name: 'Cholla Wood & Catappa Leaf Shrimp Playground', price: 259, accent: '#679880', desc: 'Porous desert cactus wood that grows beneficial biofilm for Neocaridina shrimp.', sizes: ['2 Logs + 5 Leaves'], variants: ['Biofilm Kit'] }
+        ],
+        Healthcare: [
+          { name: 'Indian Almond (Catappa) Tannin Conditioning Leaves', price: 199, accent: '#C9892B', desc: 'Sun-dried organic Badam leaves releasing natural antibacterial tannins for Bettas & Discus.', sizes: ['10 Large Leaves', '25 Leaves (+₹180)'], variants: ['Grade-A Sun Dried'] },
+          { name: 'Broad-Spectrum White-Spot (Ich) & Fin-Rot Remedy', price: 329, accent: '#38A3A5', desc: 'Gentle herbal-malachite treatment effective against external parasites and fungal patches.', sizes: ['100 ml Bottle'], variants: ['Freshwater Safe'] },
+          { name: 'Aquarium Mineral & Electrolyte Stress Relief Salt', price: 219, accent: '#5A9BD4', desc: 'Evaporated sea-salt crystals that improve gill function and osmotic balance.', sizes: ['350 g Jar', '750 g Jar (+₹180)'], variants: ['Pure Evaporated'] },
+          { name: '6-in-1 Rapid Aquarium Water Test Strips (50 Ct)', price: 449, accent: '#227C7E', desc: 'Tests pH, Ammonia/Nitrite, Nitrate, GH, KH, and Chlorine in 60 seconds.', sizes: ['50 Strips', '100 Strips (+₹340)'], variants: ['Freshwater Kit'] },
+          { name: 'Chelated Liquid Iron & Macro Plant Fertilizer', price: 349, accent: '#679880', desc: 'Shrimp-safe aquatic plant nutrition for lush green stems and zero algae bloom.', sizes: ['250 ml Pump'], variants: ['All-in-One Tropica'] }
+        ],
+        Accessories: [
+          { name: 'Whisper-Quiet Dual Bio-Sponge Corner Filter', price: 399, accent: '#38A3A5', desc: 'Gentle mechanical + biological filtration safe for baby fry, Bettas, and shrimp tanks.', sizes: ['Up to 40 L', 'Up to 100 L (+₹140)'], variants: ['Twin Sponge'] },
+          { name: 'Submersible Digital LCD Aquarium Thermometer', price: 249, accent: '#5A9BD4', desc: 'High-accuracy ±0.1°C waterproof probe display for tropical temperature monitoring.', sizes: ['Standard'], variants: ['Slate Display'] },
+          { name: 'Full-Spectrum Clip-On Planted Tank LED Light', price: 699, accent: '#227C7E', desc: '6500K crisp white + RGB daylight LEDs with 3 brightness modes for rimless tanks.', sizes: ['10W (30–45 cm)', '18W (45–60 cm) (+₹250)'], variants: ['Matte Black', 'Brushed Silver'] },
+          { name: 'Ceramic Bio-Rings & Activated Carbon Media Pack', price: 299, accent: '#679880', desc: 'High-porosity sintered glass rings housed in a zippered nylon filter media bag.', sizes: ['500 g Pack', '1 kg Pack (+₹220)'], variants: ['Bio-Ring + Carbon'] },
+          { name: 'Fine-Mesh Telescopic Shrimp & Fish Landing Net', price: 189, accent: '#38A3A5', desc: 'Ultra-soft woven nylon net that protects delicate Betta and Goldfish fins.', sizes: ['10 cm Net', '15 cm Net (+₹50)'], variants: ['Sage Handle'] }
+        ]
+      }
+    };
+
+    // Build flattened 125-product array
+    const PRODUCTS = [];
+    let prodCounter = 1;
+    Object.keys(CATALOG_BLUEPRINT).forEach(species => {
+      Object.keys(CATALOG_BLUEPRINT[species]).forEach(category => {
+        CATALOG_BLUEPRINT[species][category].forEach((item) => {
+          PRODUCTS.push({
+            id: `PP-${String(prodCounter).padStart(3, '0')}`,
+            numericId: prodCounter,
+            species,
+            category,
+            name: item.name,
+            price: item.price,
+            accentColor: item.accent,
+            description: item.desc,
+            sizes: item.sizes,
+            variants: item.variants,
+            rating: (4.6 + ((prodCounter * 7) % 4) * 0.1).toFixed(1),
+            reviewsCount: 38 + ((prodCounter * 13) % 190),
+            inStock: true
+          });
+          prodCounter++;
+        });
+      });
+    });
+
+    // =========================================================================
+    // 3. APPLICATION STATE & LOCALSTORAGE PERSISTENCE
+    // =========================================================================
+    const STORAGE_KEY = 'puffypaws_state_v3';
+    const JOINING_WALLET_BONUS = 250;
+
+    let appState = {
+      currentTab: 'home',
+      filterSpecies: 'All',
+      filterCategory: 'All',
+      searchQuery: '',
+      cart: [],
+      appliedCoupon: null,
+      user: null,
+      pendingCheckoutAfterAuth: false,
+      pendingVetBookingAfterAuth: false,
+      pendingOnboardingUser: null
+    };
+
+    let modalSelection = {
+      productId: null,
+      sizeIndex: 0,
+      variantIndex: 0,
+      petTagName: '',
+      giftWrap: false,
+      qty: 1
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          appState.cart = Array.isArray(parsed.cart) ? parsed.cart : [];
+          appState.user = parsed.user || null;
+          appState.appliedCoupon = parsed.appliedCoupon || null;
+        }
+      } catch (e) {
+        console.warn('State load fallback:', e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          cart: appState.cart,
+          user: appState.user,
+          appliedCoupon: appState.appliedCoupon
+        }));
+      } catch (e) {
+        console.warn('State save warning:', e);
+      }
+    }
+
+    // =========================================================================
+    // 4. TOAST NOTIFICATIONS (Non-blocking, zero alert() calls)
+    // =========================================================================
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const colors = {
+        success: 'bg-slateDeep text-white border-sage',
+        warning: 'bg-amber-900 text-white border-amber-400',
+        error: 'bg-red-900 text-white border-red-400'
+      };
+      const icons = {
+        success: 'fa-circle-check text-sage',
+        warning: 'fa-circle-exclamation text-ochre',
+        error: 'fa-triangle-exclamation text-red-300'
+      };
+
+      toast.className = `${colors[type] || colors.success} border-l-4 px-4 py-3 rounded-2xl shadow-lg flex items-center gap-3 text-xs sm:text-sm font-medium pointer-events-auto transition-all duration-300 transform translate-y-2 opacity-0`;
+      toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.success} text-base shrink-0"></i><span>${message}</span>`;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3800);
+    }
+
+    // =========================================================================
+    // 5. NAVIGATION & TABS
+    // =========================================================================
+    function switchTab(tabName) {
+      appState.currentTab = tabName;
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById(`view-${tabName}`);
+      if (target) target.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const isActive = btn.getAttribute('data-tab') === tabName;
+        if (isActive) {
+          btn.classList.add('bg-terracotta', 'text-white', 'shadow-2xs');
+          btn.classList.remove('text-slateDeep', 'bg-sand/70', 'hover:bg-sand');
+        } else {
+          btn.classList.remove('bg-terracotta', 'text-white', 'shadow-2xs');
+          btn.classList.add('text-slateDeep', 'bg-sand/70', 'hover:bg-sand');
+        }
+      });
+
+      if (tabName === 'vet' && appState.user && appState.user.petName) {
+        const vetPetInput = document.getElementById('vet-pet-name');
+        if (vetPetInput && !vetPetInput.value.trim()) {
+          vetPetInput.value = appState.user.petName;
+        }
+      }
+
+      if (tabName === 'shop') {
+        renderShopCatalog();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function jumpToSpecies(species) {
+      appState.filterSpecies = species;
+      appState.filterCategory = 'All';
+      switchTab('shop');
+    }
+
+    function handleHeaderSearch(val) {
+      appState.searchQuery = val;
+      const shopInput = document.getElementById('shop-search-input');
+      const headerInput = document.getElementById('header-search-input');
+      const mobileInput = document.getElementById('mobile-search-input');
+      if (shopInput && shopInput.value !== val) shopInput.value = val;
+      if (headerInput && headerInput.value !== val) headerInput.value = val;
+      if (mobileInput && mobileInput.value !== val) mobileInput.value = val;
+
+      if (appState.currentTab !== 'shop' && val.trim().length > 0) {
+        switchTab('shop');
+      } else if (appState.currentTab === 'shop') {
+        renderShopCatalog();
+      }
+    }
+
+    // =========================================================================
+    // 6. HOME PAGE & SHOP CATALOG RENDERING
+    // =========================================================================
+    function createProductCardHtml(product) {
+      const speciesColors = {
+        Dog: 'bg-[#FBE9E2] text-[#9A3412]',
+        Cat: 'bg-[#E6F2EC] text-[#166534]',
+        Rabbit: 'bg-[#FDF3E1] text-[#92400E]',
+        Bird: 'bg-[#E6F1F8] text-[#1E40AF]',
+        Fish: 'bg-[#E2F5F3] text-[#115E59]'
+      };
+
+      return `
+        <div onclick="openProductModal('${product.id}')" class="cursor-pointer bg-white rounded-3xl p-4 border border-stone-200/80 hover:border-terracotta/60 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2.5">
+              <span class="text-[11px] font-bold px-2.5 py-1 rounded-full ${speciesColors[product.species]}">${product.species}</span>
+              <span class="text-[11px] font-medium text-stone-400">${product.category}</span>
+            </div>
+
+            <div class="py-2 group-hover:scale-105 transition-transform duration-300">
+              ${getProductGraphicSvg(product, false)}
+            </div>
+
+            <div class="mt-2">
+              <div class="flex items-center gap-1 text-xs text-amber-500 font-semibold mb-1">
+                <i class="fa-solid fa-star text-[11px]"></i>
+                <span>${product.rating}</span>
+                <span class="text-stone-400 font-normal">(${product.reviewsCount})</span>
+              </div>
+              <h3 class="font-display font-bold text-base text-slateDeep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">${product.name}</h3>
+              <p class="text-xs text-stone-500 line-clamp-2 mt-1">${product.description}</p>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
+            <div>
+              <span class="text-[10px] text-stone-400 block">Starts at</span>
+              <span class="font-display font-bold text-lg text-slateDeep">₹${product.price.toLocaleString('en-IN')}</span>
+            </div>
+            <button type="button" onclick="event.stopPropagation(); openProductModal('${product.id}')" class="px-3.5 py-2 rounded-2xl bg-sand group-hover:bg-terracotta text-slateDeep group-hover:text-white text-xs font-bold transition-colors flex items-center gap-1.5">
+              <span>Customize</span>
+              <i class="fa-solid fa-plus text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHomeFeatured() {
+      const sampleDog = PRODUCTS.find(p => p.species === 'Dog' && p.category === 'Food');
+      const sampleCat = PRODUCTS.find(p => p.species === 'Cat' && p.category === 'Grooming');
+      const sampleRabbit = PRODUCTS.find(p => p.species === 'Rabbit' && p.category === 'Toys');
+      const sampleBird = PRODUCTS.find(p => p.species === 'Bird' && p.category === 'Accessories');
+
+      if (sampleDog) document.getElementById('hero-svg-dog').innerHTML = getProductGraphicSvg(sampleDog, false);
+      if (sampleCat) document.getElementById('hero-svg-cat').innerHTML = getProductGraphicSvg(sampleCat, false);
+      if (sampleRabbit) document.getElementById('hero-svg-rabbit').innerHTML = getProductGraphicSvg(sampleRabbit, false);
+      if (sampleBird) document.getElementById('hero-svg-bird').innerHTML = getProductGraphicSvg(sampleBird, false);
+
+      const featured = [];
+      ['Dog', 'Cat', 'Rabbit', 'Bird', 'Fish'].forEach((sp) => {
+        const spItems = PRODUCTS.filter(p => p.species === sp);
+        featured.push(spItems[0], spItems[7]);
+      });
+
+      document.getElementById('home-featured-grid').innerHTML = featured.map(createProductCardHtml).join('');
+    }
+
+    function renderFilterPills() {
+      const speciesList = [
+        { id: 'All', label: '🐾 All Species (125)' },
+        { id: 'Dog', label: '🐶 Dog (25)' },
+        { id: 'Cat', label: '🐱 Cat (25)' },
+        { id: 'Rabbit', label: '🐰 Rabbit (25)' },
+        { id: 'Bird', label: '🦜 Bird (25)' },
+        { id: 'Fish', label: '🐠 Fish (25)' }
+      ];
+
+      const categoryList = [
+        { id: 'All', label: 'All Categories' },
+        { id: 'Food', label: '🥣 Food' },
+        { id: 'Grooming', label: '🧴 Grooming' },
+        { id: 'Toys', label: '🎾 Toys' },
+        { id: 'Healthcare', label: '🩺 Healthcare' },
+        { id: 'Accessories', label: '🛏️ Accessories' }
+      ];
+
+      document.getElementById('species-filter-pills').innerHTML = speciesList.map(s => {
+        const active = appState.filterSpecies === s.id;
+        return `<button onclick="setSpeciesFilter('${s.id}')" class="px-4 py-2 rounded-2xl text-xs font-bold transition-all border ${active ? 'bg-terracotta text-white border-terracotta shadow-2xs' : 'bg-cream text-slateDeep border-stone-200 hover:border-terracotta/50'}">${s.label}</button>`;
+      }).join('');
+
+      document.getElementById('category-filter-pills').innerHTML = categoryList.map(c => {
+        const active = appState.filterCategory === c.id;
+        return `<button onclick="setCategoryFilter('${c.id}')" class="px-4 py-2 rounded-2xl text-xs font-bold transition-all border ${active ? 'bg-sageDark text-white border-sageDark shadow-2xs' : 'bg-cream text-slateDeep border-stone-200 hover:border-sage'}">${c.label}</button>`;
+      }).join('');
+    }
+
+    function setSpeciesFilter(species) {
+      appState.filterSpecies = species;
+      renderShopCatalog();
+    }
+
+    function setCategoryFilter(category) {
+      appState.filterCategory = category;
+      renderShopCatalog();
+    }
+
+    function updateSearchQuery(q) {
+      appState.searchQuery = q;
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) clearBtn.classList.toggle('hidden', !q.trim());
+      renderShopCatalog();
+    }
+
+    function resetShopFilters() {
+      appState.filterSpecies = 'All';
+      appState.filterCategory = 'All';
+      appState.searchQuery = '';
+      document.getElementById('shop-search-input').value = '';
+      document.getElementById('header-search-input').value = '';
+      document.getElementById('mobile-search-input').value = '';
+      document.getElementById('clear-search-btn').classList.add('hidden');
+      renderShopCatalog();
+    }
+
+    function renderShopCatalog() {
+      renderFilterPills();
+      const q = appState.searchQuery.trim().toLowerCase();
+
+      const filtered = PRODUCTS.filter(p => {
+        const matchSpecies = appState.filterSpecies === 'All' || p.species === appState.filterSpecies;
+        const matchCat = appState.filterCategory === 'All' || p.category === appState.filterCategory;
+        const matchSearch = !q ||
+          p.name.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.species.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q);
+        return matchSpecies && matchCat && matchSearch;
+      });
+
+      document.getElementById('filtered-count').textContent = filtered.length;
+      const grid = document.getElementById('shop-products-grid');
+      const empty = document.getElementById('shop-empty-state');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+      } else {
+        empty.classList.add('hidden');
+        grid.innerHTML = filtered.map(createProductCardHtml).join('');
+      }
+    }
+
+    // =========================================================================
+    // 7. PRODUCT DETAIL & CUSTOMIZATION MODAL (Exclusive Numeric Index Toggles)
+    // =========================================================================
+    function extractSizeExtraPrice(sizeString) {
+      const match = sizeString.match(/\(\+₹([\d,]+)\)/);
+      if (!match) return 0;
+      return parseInt(match[1].replace(/,/g, ''), 10) || 0;
+    }
+
+    function openProductModal(productId) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+
+      modalSelection = {
+        productId: product.id,
+        sizeIndex: 0,
+        variantIndex: 0,
+        petTagName: appState.user && appState.user.petName ? appState.user.petName : '',
+        giftWrap: false,
+        qty: 1
+      };
+
+      renderProductDetailModal();
+      document.getElementById('product-detail-modal').classList.remove('hidden');
+    }
+
+    function selectModalSize(idx) {
+      modalSelection.sizeIndex = Number(idx);
+      renderProductDetailModal();
+    }
+
+    function selectModalVariant(idx) {
+      modalSelection.variantIndex = Number(idx);
+      renderProductDetailModal();
+    }
+
+    function updateModalQty(delta) {
+      const next = modalSelection.qty + delta;
+      if (next >= 1 && next <= 20) {
+        modalSelection.qty = next;
+        renderProductDetailModal();
+      }
+    }
+
+    function toggleModalGiftWrap(checked) {
+      modalSelection.giftWrap = Boolean(checked);
+      renderProductDetailModal();
+    }
+
+    function updateModalPetTag(val) {
+      modalSelection.petTagName = val;
+    }
+
+    function calculateModalUnitPrice(product) {
+      const sizeStr = product.sizes[modalSelection.sizeIndex] || product.sizes[0];
+      const extra = extractSizeExtraPrice(sizeStr);
+      const wrapCost = modalSelection.giftWrap ? 40 : 0;
+      return product.price + extra + wrapCost;
+    }
+
+    function renderProductDetailModal() {
+      const product = PRODUCTS.find(p => p.id === modalSelection.productId);
+      if (!product) return;
+
+      const unitPrice = calculateModalUnitPrice(product);
+      const totalPrice = unitPrice * modalSelection.qty;
+
+      const sizeButtonsHtml = product.sizes.map((sz, idx) => {
+        const isSelected = idx === modalSelection.sizeIndex;
+        return `
+          <button type="button" onclick="selectModalSize(${idx})" class="px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${isSelected ? 'bg-terracotta text-white border-terracotta shadow-2xs' : 'bg-white text-slateDeep border-stone-200 hover:border-terracotta/60'}">
+            ${sz}
+          </button>
+        `;
+      }).join('');
+
+      const variantButtonsHtml = product.variants.map((vr, idx) => {
+        const isSelected = idx === modalSelection.variantIndex;
+        return `
+          <button type="button" onclick="selectModalVariant(${idx})" class="px-3.5 py-2 rounded-xl text-xs font-bold border transition-all ${isSelected ? 'bg-sageDark text-white border-sageDark shadow-2xs' : 'bg-white text-slateDeep border-stone-200 hover:border-sage'}">
+            ${vr}
+          </button>
+        `;
+      }).join('');
+
+      document.getElementById('product-detail-content').innerHTML = `
+        <!-- Left: Large SVG Illustration -->
+        <div class="md:col-span-5 bg-white rounded-3xl p-6 border border-stone-200/80 flex flex-col items-center justify-center">
+          ${getProductGraphicSvg(product, true)}
+          <div class="mt-4 flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full bg-sage/20 text-sageDark text-xs font-bold">
+              <i class="fa-solid fa-circle-check mr-1"></i> In Stock • Ready to Ship
+            </span>
+          </div>
+          <p class="text-[11px] text-stone-400 mt-2">SKU: ${product.id} • 100% Pet-Safe Certified</p>
+        </div>
+
+        <!-- Right: Customization Options -->
+        <div class="md:col-span-7 space-y-4">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-terracotta uppercase tracking-wider">
+              <span>${product.species}</span>
+              <span>•</span>
+              <span>${product.category}</span>
+            </div>
+            <h2 class="font-display text-2xl font-bold text-slateDeep mt-1">${product.name}</h2>
+            <div class="flex items-center gap-3 mt-1.5">
+              <span class="font-display text-2xl font-bold text-terracotta">₹${unitPrice.toLocaleString('en-IN')}</span>
+              <span class="text-xs text-amber-500 font-semibold"><i class="fa-solid fa-star"></i> ${product.rating} (${product.reviewsCount} reviews)</span>
+            </div>
+            <p class="text-xs sm:text-sm text-stone-600 mt-2 leading-relaxed">${product.description}</p>
+          </div>
+
+          <!-- Option 1: Packet / Option Size -->
+          <div>
+            <label class="block text-xs font-bold uppercase text-stone-500 mb-1.5">Select Pack / Size</label>
+            <div class="flex flex-wrap gap-2">
+              ${sizeButtonsHtml}
+            </div>
+          </div>
+
+          <!-- Option 2: Variant / Flavor -->
+          <div>
+            <label class="block text-xs font-bold uppercase text-stone-500 mb-1.5">Select Variant / Flavor</label>
+            <div class="flex flex-wrap gap-2">
+              ${variantButtonsHtml}
+            </div>
+          </div>
+
+          <!-- Optional Customizations: Pet Name Tag & Gift Wrap -->
+          <div class="bg-white rounded-2xl p-3.5 border border-stone-200/80 space-y-3">
+            <div>
+              <label class="block text-[11px] font-bold uppercase text-stone-500 mb-1">Optional Custom Pet Name Tag / Note</label>
+              <input type="text" value="${modalSelection.petTagName.replace(/"/g, '&quot;')}" oninput="updateModalPetTag(this.value)" placeholder="e.g. For Cutie Bruno 🐾" class="w-full px-3 py-2 rounded-xl bg-cream border border-stone-200 text-xs focus:outline-none focus:border-terracotta">
+            </div>
+            <label class="flex items-center justify-between cursor-pointer pt-1">
+              <span class="flex items-center gap-2 text-xs font-semibold text-slateDeep">
+                <input type="checkbox" ${modalSelection.giftWrap ? 'checked' : ''} onchange="toggleModalGiftWrap(this.checked)" class="rounded accent-terracotta w-4 h-4">
+                <span><i class="fa-solid fa-gift text-terracotta mr-1"></i> Add Eco-Friendly Gift Wrap & Paw Card</span>
+              </span>
+              <span class="text-xs font-bold text-terracotta">+₹40</span>
+            </label>
+          </div>
+
+          <!-- Quantity Stepper + Add to Cart CTA -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+            <div class="flex items-center justify-between sm:justify-center bg-white border border-stone-200 rounded-2xl px-3 py-2">
+              <button type="button" onclick="updateModalQty(-1)" class="w-8 h-8 rounded-xl bg-sand hover:bg-stone-200 text-slateDeep font-bold flex items-center justify-center">
+                <i class="fa-solid fa-minus text-xs"></i>
+              </button>
+              <span class="w-10 text-center font-display font-bold text-base text-slateDeep">${modalSelection.qty}</span>
+              <button type="button" onclick="updateModalQty(1)" class="w-8 h-8 rounded-xl bg-sand hover:bg-stone-200 text-slateDeep font-bold flex items-center justify-center">
+                <i class="fa-solid fa-plus text-xs"></i>
+              </button>
+            </div>
+
+            <button type="button" onclick="addCustomizedItemToCart()" class="flex-1 py-3.5 px-5 rounded-2xl bg-terracotta hover:bg-terracottaDark text-white font-bold text-sm shadow-md shadow-terracotta/20 transition-all">
+              Add Customized Item to Cart • ₹${totalPrice.toLocaleString('en-IN')}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function addCustomizedItemToCart() {
+      const product = PRODUCTS.find(p => p.id === modalSelection.productId);
+      if (!product) return;
+
+      const sizeLabel = product.sizes[modalSelection.sizeIndex] || product.sizes[0];
+      const variantLabel = product.variants[modalSelection.variantIndex] || product.variants[0];
+      const unitPrice = calculateModalUnitPrice(product);
+      const cleanTag = modalSelection.petTagName.trim();
+
+      const customSignature = `${product.id}|${sizeLabel}|${variantLabel}|${cleanTag}|${modalSelection.giftWrap}`;
+      const existing = appState.cart.find(item => item.signature === customSignature);
+
+      if (existing) {
+        existing.qty = Math.min(20, existing.qty + modalSelection.qty);
+      } else {
+        appState.cart.push({
+          uid: 'CART-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+          signature: customSignature,
+          productId: product.id,
+          name: product.name,
+          species: product.species,
+          category: product.category,
+          unitPrice,
+          sizeLabel,
+          variantLabel,
+          petTagName: cleanTag,
+          giftWrap: modalSelection.giftWrap,
+          qty: modalSelection.qty
+        });
+      }
+
+      saveState();
+      updateCartBadge();
+      closeModal('product-detail-modal');
+      showToast(`Added "${product.name}" to your gift bag!`);
+      toggleCartDrawer(true);
+    }
+
+    // =========================================================================
+    // 8. SHOPPING CART DRAWER & COUPONS
+    // =========================================================================
+    function updateCartBadge() {
+      const totalItems = appState.cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('cart-badge-count').textContent = totalItems;
+    }
+
+    function toggleCartDrawer(open) {
+      const overlay = document.getElementById('cart-drawer-overlay');
+      if (open) {
+        renderCartDrawer();
+        overlay.classList.remove('hidden');
+      } else {
+        overlay.classList.add('hidden');
+      }
+    }
+
+    function updateCartItemQty(uid, delta) {
+      const idx = appState.cart.findIndex(i => i.uid === uid);
+      if (idx === -1) return;
+      appState.cart[idx].qty += delta;
+      if (appState.cart[idx].qty <= 0) {
+        appState.cart.splice(idx, 1);
+      }
+      saveState();
+      updateCartBadge();
+      renderCartDrawer();
+    }
+
+    function removeCartItem(uid) {
+      appState.cart = appState.cart.filter(i => i.uid !== uid);
+      saveState();
+      updateCartBadge();
+      renderCartDrawer();
+    }
+
+    function calculateCartTotals() {
+      const subtotal = appState.cart.reduce((sum, item) => sum + item.unitPrice * item.qty, 0);
+      let discount = 0;
+
+      if (appState.appliedCoupon === 'PAWS15' && subtotal > 0) {
+        discount = Math.round(subtotal * 0.15);
+      } else if (appState.appliedCoupon === 'FIRSTGIFT' && subtotal >= 499) {
+        discount = 100;
+      } else if (appState.appliedCoupon === 'FIRSTGIFT' && subtotal < 499) {
+        appState.appliedCoupon = null;
+      }
+
+      const finalTotal = Math.max(0, subtotal - discount);
+      return { subtotal, discount, finalTotal };
+    }
+
+    function applyCartCoupon() {
+      const input = document.getElementById('cart-coupon-input');
+      const code = input.value.trim().toUpperCase();
+      const { subtotal } = calculateCartTotals();
+
+      if (code === 'PAWS15') {
+        appState.appliedCoupon = 'PAWS15';
+        showToast('Coupon PAWS15 applied! 15% OFF unlocked.');
+      } else if (code === 'FIRSTGIFT') {
+        if (subtotal < 499) {
+          showToast('FIRSTGIFT requires minimum cart value of ₹499.', 'warning');
+          return;
+        }
+        appState.appliedCoupon = 'FIRSTGIFT';
+        showToast('Coupon FIRSTGIFT applied! ₹100 OFF.');
+      } else {
+        showToast('Invalid code. Try PAWS15 or FIRSTGIFT.', 'error');
+        return;
+      }
+
+      saveState();
+      renderCartDrawer();
+    }
+
+    function renderCartDrawer() {
+      const container = document.getElementById('cart-items-container');
+      const footer = document.getElementById('cart-footer-summary');
+
+      if (appState.cart.length === 0) {
+        footer.classList.add('hidden');
+        container.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-center py-12">
+            <div class="w-16 h-16 rounded-full bg-sand text-terracotta flex items-center justify-center text-2xl mb-3">
+              <i class="fa-solid fa-basket-shopping"></i>
+            </div>
+            <h3 class="font-display text-lg font-bold text-slateDeep">Your pet's gift bag is empty</h3>
+            <p class="text-xs text-stone-500 mt-1 max-w-xs">Explore 125+ nutritious treats, cozy beds, and playful toys across 5 species.</p>
+            <button onclick="toggleCartDrawer(false); switchTab('shop')" class="mt-4 px-5 py-2.5 rounded-2xl bg-terracotta text-white text-xs font-bold hover:bg-terracottaDark">
+              Browse 125+ Products
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      footer.classList.remove('hidden');
+      container.innerHTML = appState.cart.map(item => {
+        const prod = PRODUCTS.find(p => p.id === item.productId) || { species: item.species, category: item.category };
+        return `
+          <div class="bg-white rounded-2xl p-3.5 border border-stone-200/80 flex gap-3">
+            <div class="w-16 h-16 shrink-0 flex items-center justify-center">
+              ${getProductGraphicSvg(prod, false).replace('w-32 h-32', 'w-16 h-16')}
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between gap-2">
+                <h4 class="font-display font-bold text-sm text-slateDeep leading-tight truncate">${item.name}</h4>
+                <button onclick="removeCartItem('${item.uid}')" class="text-stone-400 hover:text-red-500 text-xs">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+              <p class="text-[11px] text-stone-500 mt-0.5">${item.sizeLabel} • ${item.variantLabel}</p>
+              ${item.petTagName ? `<p class="text-[11px] text-terracotta font-semibold mt-0.5">🏷️ Tag: "${item.petTagName}"</p>` : ''}
+              ${item.giftWrap ? `<p class="text-[11px] text-sageDark font-semibold">🎁 Gift Wrapped (+₹40)</p>` : ''}
+
+              <div class="flex items-center justify-between mt-2.5">
+                <span class="font-bold text-sm text-slateDeep">₹${(item.unitPrice * item.qty).toLocaleString('en-IN')}</span>
+                <div class="flex items-center gap-2 bg-cream border border-stone-200 rounded-xl px-2 py-1">
+                  <button onclick="updateCartItemQty('${item.uid}', -1)" class="text-xs font-bold text-slateDeep px-1">-</button>
+                  <span class="text-xs font-bold w-4 text-center">${item.qty}</span>
+                  <button onclick="updateCartItemQty('${item.uid}', 1)" class="text-xs font-bold text-slateDeep px-1">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const { subtotal, discount, finalTotal } = calculateCartTotals();
+      document.getElementById('cart-subtotal').textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+      document.getElementById('cart-total').textContent = `₹${finalTotal.toLocaleString('en-IN')}`;
+
+      const discountRow = document.getElementById('cart-discount-row');
+      const couponStatus = document.getElementById('cart-coupon-status');
+      if (discount > 0 && appState.appliedCoupon) {
+        discountRow.classList.remove('hidden');
+        document.getElementById('cart-discount').textContent = `-₹${discount.toLocaleString('en-IN')}`;
+        couponStatus.classList.remove('hidden');
+        couponStatus.textContent = `✓ Voucher ${appState.appliedCoupon} applied`;
+      } else {
+        discountRow.classList.add('hidden');
+        couponStatus.classList.add('hidden');
+      }
+    }
+
+    // =========================================================================
+    // 9. AUTHENTICATION, PET ONBOARDING & USER DASHBOARD (₹250 JOINING BONUS)
+    // =========================================================================
+    let currentAuthMode = 'signup';
+
+    function setAuthMode(mode) {
+      currentAuthMode = mode;
+      const signupTab = document.getElementById('auth-tab-signup');
+      const signinTab = document.getElementById('auth-tab-signin');
+      const nameGroup = document.getElementById('auth-name-group');
+      const petGroup = document.getElementById('auth-pet-group');
+      const submitBtn = document.getElementById('auth-submit-btn');
+
+      if (mode === 'signup') {
+        signupTab.classList.add('bg-white', 'text-slateDeep', 'shadow-2xs');
+        signupTab.classList.remove('text-stone-500');
+        signinTab.classList.remove('bg-white', 'text-slateDeep', 'shadow-2xs');
+        signinTab.classList.add('text-stone-500');
+        nameGroup.classList.remove('hidden');
+        petGroup.classList.remove('hidden');
+        submitBtn.textContent = `Join PuffyPaws & Get ₹${JOINING_WALLET_BONUS} Wallet`;
+      } else {
+        signinTab.classList.add('bg-white', 'text-slateDeep', 'shadow-2xs');
+        signinTab.classList.remove('text-stone-500');
+        signupTab.classList.remove('bg-white', 'text-slateDeep', 'shadow-2xs');
+        signupTab.classList.add('text-stone-500');
+        nameGroup.classList.add('hidden');
+        petGroup.classList.add('hidden');
+        submitBtn.textContent = 'Sign In to PuffyPaws';
+      }
+    }
+    function openAuthModal(redirectToCheckout = false, redirectToVet = false) {
+      appState.pendingCheckoutAfterAuth = redirectToCheckout;
+      appState.pendingVetBookingAfterAuth = redirectToVet;
+      document.getElementById('auth-main-view').classList.remove('hidden');
+      document.getElementById('auth-onboarding-view').classList.add('hidden');
+      document.getElementById('auth-modal').classList.remove('hidden');
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value.trim();
+      const userNameInput = document.getElementById('auth-user-name').value.trim();
+      const petNameInput = document.getElementById('auth-pet-name').value.trim();
+
+      if (currentAuthMode === 'signup') {
+        if (!userNameInput || !petNameInput) {
+          showToast('Please enter both your name and your pet’s name.', 'warning');
+          return;
+        }
+        finalizeUserLogin({
+          name: userNameInput,
+          petName: petNameInput,
+          email,
+          walletBalance: JOINING_WALLET_BONUS,
+          address: 'Flat 402, Green Meadows Residency, Koramangala 4th Block, Bengaluru - 560034',
+          orders: []
+        });
+      } else {
+        if (appState.user && appState.user.email === email && appState.user.petName) {
+          finalizeUserLogin(appState.user);
+        } else {
+          appState.pendingOnboardingUser = {
+            name: userNameInput || email.split('@')[0],
+            petName: '',
+            email,
+            walletBalance: JOINING_WALLET_BONUS,
+            address: 'Flat 402, Green Meadows Residency, Koramangala 4th Block, Bengaluru - 560034',
+            orders: []
+          };
+          document.getElementById('onboard-user-name').value = userNameInput || '';
+          document.getElementById('onboard-pet-name').value = '';
+          document.getElementById('auth-main-view').classList.add('hidden');
+          document.getElementById('auth-onboarding-view').classList.remove('hidden');
+        }
+      }
+    }
+
+    function completePetOnboarding(e) {
+      e.preventDefault();
+      const uName = document.getElementById('onboard-user-name').value.trim();
+      const pName = document.getElementById('onboard-pet-name').value.trim();
+      if (!uName || !pName) return;
+
+      const newUser = {
+        ...(appState.pendingOnboardingUser || {
+          email: 'member@puffypaws.in',
+          walletBalance: JOINING_WALLET_BONUS,
+          address: 'Flat 402, Green Meadows Residency, Koramangala 4th Block, Bengaluru - 560034',
+          orders: []
+        }),
+        name: uName,
+        petName: pName
+      };
+      appState.pendingOnboardingUser = null;
+      finalizeUserLogin(newUser);
+    }
+
+    function finalizeUserLogin(userObj) {
+      appState.user = userObj;
+      saveState();
+      updateHeaderUserUI();
+      closeModal('auth-modal');
+      showToast(`Welcome ${userObj.name} & Cutie ${userObj.petName}! ₹${userObj.walletBalance} Wallet ready 🐾`);
+
+      if (appState.pendingCheckoutAfterAuth) {
+        appState.pendingCheckoutAfterAuth = false;
+        openCheckoutModal();
+      } else if (appState.pendingVetBookingAfterAuth) {
+        appState.pendingVetBookingAfterAuth = false;
+        const vetPetInput = document.getElementById('vet-pet-name');
+        if (vetPetInput && !vetPetInput.value.trim() && userObj.petName) {
+          vetPetInput.value = userObj.petName;
+        }
+        finalizeVetBooking();
+      }
+    }
+
+    function updateHeaderUserUI() {
+      const label = document.getElementById('user-account-label');
+      if (appState.user) {
+        label.innerHTML = `${appState.user.name} <span class="text-xs text-terracotta font-bold">🐾 ${appState.user.petName}</span>`;
+      } else {
+        label.textContent = 'Sign In / Join';
+      }
+    }
+
+    function handleUserAccountClick() {
+      if (!appState.user) {
+        openAuthModal(false);
+      } else {
+        openDashboardModal();
+      }
+    }
+
+    function openDashboardModal() {
+      if (!appState.user) return;
+      document.getElementById('dash-greeting').textContent = `Hi Cutie ${appState.user.petName}! (Owner: ${appState.user.name})`;
+      document.getElementById('dash-email').textContent = appState.user.email;
+      document.getElementById('dash-wallet-balance').textContent = `₹${appState.user.walletBalance.toLocaleString('en-IN')}`;
+      document.getElementById('dash-address-input').value = appState.user.address || '';
+
+      renderDashboardOrders();
+      document.getElementById('dashboard-modal').classList.remove('hidden');
+    }
+
+    function topUpWallet() {
+      if (!appState.user) return;
+      appState.user.walletBalance += 500;
+      saveState();
+      document.getElementById('dash-wallet-balance').textContent = `₹${appState.user.walletBalance.toLocaleString('en-IN')}`;
+      showToast('₹500 added instantly to your PuffyPaws Pay Wallet!');
+    }
+
+    function saveDashboardAddress() {
+      if (!appState.user) return;
+      appState.user.address = document.getElementById('dash-address-input').value.trim();
+      saveState();
+      showToast('Default delivery address updated!');
+    }
+
+    function copyCouponCode(code) {
+      const temp = document.createElement('textarea');
+      temp.value = code;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showToast(`Copied coupon code ${code} to clipboard!`);
+    }
+
+    function renderDashboardOrders() {
+      const container = document.getElementById('dash-orders-list');
+      const orders = appState.user && appState.user.orders ? appState.user.orders : [];
+
+      if (orders.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 text-center border border-stone-200/80 text-xs text-stone-500">
+            No orders placed yet. Treat ${appState.user.petName} to something special today!
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = orders.map(ord => `
+        <div class="bg-white rounded-2xl p-4 border border-stone-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-mono font-bold text-xs text-slateDeep">${ord.orderId}</span>
+              <span class="text-[11px] px-2 py-0.5 rounded-full bg-sage/20 text-sageDark font-semibold">${ord.paymentMethod}</span>
+            </div>
+            <p class="text-xs text-stone-500 mt-1">${ord.date} • ${ord.items.length} item(s) • Total: <strong class="text-slateDeep">₹${ord.grandTotal.toLocaleString('en-IN')}</strong></p>
+            <p class="text-[11px] text-stone-400 mt-0.5 truncate max-w-md">${ord.items.map(i => `${i.name} (${i.sizeLabel})`).join(', ')}</p>
+          </div>
+          <button onclick="viewOrderInvoice('${ord.orderId}')" class="px-3.5 py-2 rounded-xl bg-sand hover:bg-terracotta text-slateDeep hover:text-white text-xs font-bold transition-colors shrink-0">
+            <i class="fa-solid fa-file-invoice mr-1"></i> View Tax Invoice
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function logoutUser() {
+      appState.user = null;
+      saveState();
+      updateHeaderUserUI();
+      closeModal('dashboard-modal');
+      showToast('Signed out safely. See you and your little paw soon!');
+    }
+
+    // =========================================================================
+    // 10. CHECKOUT FLOW (WITH SPLIT WALLET + SECONDARY PAYMENT) & GST INVOICE
+    // =========================================================================
+    function initiateCheckout() {
+      if (appState.cart.length === 0) {
+        showToast('Your cart is empty!', 'warning');
+        return;
+      }
+      toggleCartDrawer(false);
+
+      if (!appState.user) {
+        showToast('Please sign in or create an account to continue checkout.', 'warning');
+        openAuthModal(true);
+        return;
+      }
+
+      openCheckoutModal();
+    }
+
+    function openCheckoutModal() {
+      document.getElementById('checkout-address').value = appState.user.address || '';
+      const walletCheckbox = document.getElementById('use-wallet-checkbox');
+      walletCheckbox.checked = appState.user.walletBalance > 0;
+      walletCheckbox.disabled = appState.user.walletBalance <= 0;
+
+      renderCheckoutSummary();
+      document.getElementById('checkout-modal').classList.remove('hidden');
+    }
+
+    function togglePaymentFields(method) {
+      document.getElementById('pay-extra-upi').classList.toggle('hidden', !method.includes('UPI'));
+      document.getElementById('pay-extra-card').classList.toggle('hidden', !method.includes('Card'));
+    }
+
+    function getCheckoutBreakdown() {
+      const { subtotal, discount, finalTotal } = calculateCartTotals();
+      const speed = document.querySelector('input[name="delivery-speed"]:checked')?.value || 'standard';
+      const deliveryFee = speed === 'express' ? 79 : 0;
+      const orderTotal = finalTotal + deliveryFee;
+      const includedGst = Math.round(orderTotal - (orderTotal / 1.12));
+
+      const useWallet = document.getElementById('use-wallet-checkbox')?.checked && appState.user && appState.user.walletBalance > 0;
+      const walletApplied = useWallet ? Math.min(appState.user.walletBalance, orderTotal) : 0;
+      const balancePayable = Math.max(0, orderTotal - walletApplied);
+
+      return { subtotal, discount, speed, deliveryFee, orderTotal, includedGst, walletApplied, balancePayable };
+    }
+
+    function renderCheckoutSummary() {
+      const { subtotal, discount, deliveryFee, orderTotal, includedGst, walletApplied, balancePayable } = getCheckoutBreakdown();
+
+      // Update Wallet Box UI
+      document.getElementById('checkout-wallet-pill').textContent = `₹${appState.user.walletBalance.toLocaleString('en-IN')} Available`;
+      const splitNote = document.getElementById('checkout-wallet-split-note');
+      const secondarySec = document.getElementById('secondary-payment-section');
+      const secondaryHeading = document.getElementById('secondary-payment-heading');
+
+      if (walletApplied > 0 && balancePayable > 0) {
+        splitNote.textContent = `Using ₹${walletApplied.toLocaleString('en-IN')} from Wallet. Pay remaining ₹${balancePayable.toLocaleString('en-IN')} below.`;
+        secondarySec.classList.remove('opacity-50', 'pointer-events-none');
+        secondaryHeading.textContent = `Pay Remaining Balance (₹${balancePayable.toLocaleString('en-IN')}) Using:`;
+      } else if (walletApplied > 0 && balancePayable === 0) {
+        splitNote.textContent = `Full order of ₹${orderTotal.toLocaleString('en-IN')} covered by your PuffyPaws Pay Wallet!`;
+        secondarySec.classList.add('opacity-50', 'pointer-events-none');
+        secondaryHeading.textContent = 'No Additional Payment Required';
+      } else {
+        splitNote.textContent = appState.user.walletBalance > 0
+          ? 'Tick the box above to apply your wallet balance.'
+          : 'Your wallet balance is ₹0. Top up in Dashboard or pay below.';
+        secondarySec.classList.remove('opacity-50', 'pointer-events-none');
+        secondaryHeading.textContent = `Select Payment Method for ₹${balancePayable.toLocaleString('en-IN')}:`;
+      }
+
+      document.getElementById('checkout-items-mini').innerHTML = appState.cart.map(item => `
+        <div class="flex justify-between gap-2 pb-1.5 border-b border-stone-100">
+          <span class="text-slateDeep font-medium">${item.qty}× ${item.name} <span class="text-stone-400">(${item.sizeLabel})</span></span>
+          <span class="font-bold shrink-0">₹${(item.unitPrice * item.qty).toLocaleString('en-IN')}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('chk-subtotal').textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+      if (discount > 0) {
+        document.getElementById('chk-discount-row').classList.remove('hidden');
+        document.getElementById('chk-discount').textContent = `-₹${discount.toLocaleString('en-IN')}`;
+      } else {
+        document.getElementById('chk-discount-row').classList.add('hidden');
+      }
+      document.getElementById('chk-delivery').textContent = deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`;
+      document.getElementById('chk-gst').textContent = `₹${includedGst.toLocaleString('en-IN')}`;
+      document.getElementById('chk-order-total').textContent = `₹${orderTotal.toLocaleString('en-IN')}`;
+
+      const walletRow = document.getElementById('chk-wallet-used-row');
+      if (walletApplied > 0) {
+        walletRow.classList.remove('hidden');
+        document.getElementById('chk-wallet-used').textContent = `-₹${walletApplied.toLocaleString('en-IN')}`;
+      } else {
+        walletRow.classList.add('hidden');
+      }
+
+      document.getElementById('chk-grand-total').textContent = `₹${balancePayable.toLocaleString('en-IN')}`;
+    }
+
+    function placeOrder() {
+      const address = document.getElementById('checkout-address').value.trim();
+      if (!address) {
+        showToast('Please enter a valid Indian delivery address.', 'warning');
+        return;
+      }
+
+      const { subtotal, discount, speed, deliveryFee, orderTotal, includedGst, walletApplied, balancePayable } = getCheckoutBreakdown();
+      const secondaryMethod = document.querySelector('input[name="payment-method"]:checked')?.value || 'UPI (GPay / PhonePe / Paytm)';
+
+      let paymentSummaryLabel = '';
+      if (walletApplied > 0 && balancePayable === 0) {
+        paymentSummaryLabel = `PuffyPaws Pay Wallet (₹${walletApplied})`;
+      } else if (walletApplied > 0 && balancePayable > 0) {
+        paymentSummaryLabel = `Wallet (₹${walletApplied}) + ${secondaryMethod} (₹${balancePayable})`;
+      } else {
+        paymentSummaryLabel = secondaryMethod;
+      }
+
+      // Deduct applied wallet amount
+      if (walletApplied > 0) {
+        appState.user.walletBalance = Math.max(0, appState.user.walletBalance - walletApplied);
+      }
+
+      const orderRecord = {
+        orderId: 'PP-IND-' + Math.floor(100000 + Math.random() * 900000),
+        date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+        customerName: appState.user.name,
+        petName: appState.user.petName,
+        customerEmail: appState.user.email,
+        address,
+        deliverySpeed: speed === 'express' ? 'Express (24 Hrs)' : 'Standard (2–4 Days)',
+        paymentMethod: paymentSummaryLabel,
+        walletApplied,
+        balancePaidSecondary: balancePayable,
+        items: JSON.parse(JSON.stringify(appState.cart)),
+        subtotal,
+        discount,
+        couponUsed: appState.appliedCoupon,
+        deliveryFee,
+        includedGst,
+        grandTotal: orderTotal
+      };
+
+      appState.user.address = address;
+      appState.user.orders = [orderRecord, ...(appState.user.orders || [])];
+      appState.cart = [];
+      appState.appliedCoupon = null;
+
+      saveState();
+      updateCartBadge();
+      closeModal('checkout-modal');
+      showToast(`Order ${orderRecord.orderId} confirmed for Cutie ${appState.user.petName}! 🎉`);
+      renderInvoiceModal(orderRecord);
+    }
+
+    function viewOrderInvoice(orderId) {
+      if (!appState.user || !appState.user.orders) return;
+      const ord = appState.user.orders.find(o => o.orderId === orderId);
+      if (ord) {
+        closeModal('dashboard-modal');
+        renderInvoiceModal(ord);
+      }
+    }
+
+    function handleInvoiceSaveAndEmail() {
+      const targetEmail = (appState.user && appState.user.email) ? appState.user.email : 'your registered email';
+      showToast(`Invoice PDF saved & a copy has been mailed to ${targetEmail}! 📧`);
+      try {
+        window.print();
+      } catch (e) {
+        // Sandboxed preview fallback already covered by toast notification
+      }
+    }
+
+    function renderInvoiceModal(order) {
+      const rowsHtml = order.items.map((item, idx) => `
+        <tr class="border-b border-stone-100">
+          <td class="py-2.5 pr-2">${idx + 1}</td>
+          <td class="py-2.5 pr-2">
+            <p class="font-bold text-slateDeep">${item.name}</p>
+            <p class="text-[11px] text-stone-500">${item.species} • ${item.sizeLabel} • ${item.variantLabel}${item.petTagName ? ` • Tag: "${item.petTagName}"` : ''}${item.giftWrap ? ' • Gift Wrapped' : ''}</p>
+          </td>
+          <td class="py-2.5 text-center">${item.qty}</td>
+          <td class="py-2.5 text-right">₹${item.unitPrice.toLocaleString('en-IN')}</td>
+          <td class="py-2.5 text-right font-bold">₹${(item.unitPrice * item.qty).toLocaleString('en-IN')}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('invoice-print-area').innerHTML = `
+        <div class="flex flex-wrap justify-between items-start gap-4 border-b border-stone-200 pb-4">
+          <div>
+            <h3 class="font-display text-xl font-bold text-terracotta">PuffyPaws Pet Care Pvt. Ltd.</h3>
+            <p class="text-stone-500">42 Indiranagar 100ft Road, Bengaluru, Karnataka 560038</p>
+            <p class="text-stone-500 font-mono">GSTIN: 29AABCP4821M1Z5 • HSN: 2309 / 4201</p>
+          </div>
+          <div class="text-left sm:text-right">
+            <p class="font-bold text-sm uppercase text-slateDeep">Tax Invoice</p>
+            <p class="font-mono font-bold text-terracotta">${order.orderId}</p>
+            <p class="text-stone-500">Date: ${order.date}</p>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4 bg-cream p-3.5 rounded-xl">
+          <div>
+            <p class="text-[10px] font-bold uppercase text-stone-400">Billed & Shipped To</p>
+            <p class="font-bold text-slateDeep">${order.customerName} (Pet Parent of ${order.petName} 🐾)</p>
+            <p class="text-stone-600 mt-0.5">${order.address}</p>
+          </div>
+          <div class="sm:text-right">
+            <p class="text-[10px] font-bold uppercase text-stone-400">Payment & Shipping</p>
+            <p class="font-semibold text-slateDeep">${order.paymentMethod}</p>
+            <p class="text-stone-600">${order.deliverySpeed}</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b-2 border-stone-200 text-[11px] uppercase text-stone-500">
+                <th class="py-2">#</th>
+                <th class="py-2">Description of Goods</th>
+                <th class="py-2 text-center">Qty</th>
+                <th class="py-2 text-right">Rate</th>
+                <th class="py-2 text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex justify-end pt-2">
+          <div class="w-full sm:w-64 space-y-1.5">
+            <div class="flex justify-between text-stone-500">
+              <span>Taxable Subtotal</span>
+              <span>₹${order.subtotal.toLocaleString('en-IN')}</span>
+            </div>
+            ${order.discount > 0 ? `
+              <div class="flex justify-between text-sageDark font-semibold">
+                <span>Discount (${order.couponUsed || 'Promo'})</span>
+                <span>-₹${order.discount.toLocaleString('en-IN')}</span>
+              </div>
+            ` : ''}
+            <div class="flex justify-between text-stone-500">
+              <span>Delivery Charges</span>
+              <span>${order.deliveryFee === 0 ? 'FREE' : `₹${order.deliveryFee}`}</span>
+            </div>
+            <div class="flex justify-between text-stone-500">
+              <span>CGST (6%) + SGST (6%) Incl.</span>
+              <span>₹${order.includedGst.toLocaleString('en-IN')}</span>
+            </div>
+            ${order.walletApplied > 0 ? `
+              <div class="flex justify-between text-sageDark font-semibold">
+                <span>Paid via PuffyPaws Wallet</span>
+                <span>₹${order.walletApplied.toLocaleString('en-IN')}</span>
+              </div>
+            ` : ''}
+            <div class="flex justify-between font-bold text-base text-slateDeep pt-2 border-t border-stone-200">
+              <span>Total Order Value</span>
+              <span class="text-terracotta">₹${order.grandTotal.toLocaleString('en-IN')}</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-center text-[11px] text-stone-400 pt-3 border-t border-stone-100">
+          Thank you for shopping with PuffyPaws! Wishing ${order.petName} boundless tail wags, purrs & joy. 🐾
+        </p>
+      `;
+
+      document.getElementById('invoice-modal').classList.remove('hidden');
+    }
+
+    // =========================================================================
+    // 11. VET CONSULTATION & CONTACT FORMS + MODAL HELPERS
+    // =========================================================================
+    function finalizeVetBooking() {
+      const species = document.getElementById('vet-species').value;
+      const petNameInput = document.getElementById('vet-pet-name');
+      const petName = petNameInput.value.trim() || (appState.user ? appState.user.petName : 'Your Pet');
+      if (!petNameInput.value.trim()) petNameInput.value = petName;
+      const doctor = document.getElementById('vet-doctor').value;
+      const date = document.getElementById('vet-date').value;
+      const slot = document.getElementById('vet-slot').value;
+
+      const card = document.getElementById('vet-confirmation-card');
+      const text = document.getElementById('vet-confirmation-text');
+      text.innerHTML = [
+        'Video consultation for <strong>',
+        petName,
+        ' (',
+        species,
+        ')</strong> with <strong>',
+        doctor,
+        '</strong> is confirmed for <strong>',
+        date,
+        '</strong> at <strong>',
+        slot,
+        '</strong>. Meeting link sent to ',
+        (appState.user && appState.user.email ? appState.user.email : 'your email'),
+        ' &amp; WhatsApp!'
+      ].join('');
+      card.classList.remove('hidden');
+      showToast('Vet slot booked for ' + petName + '!');
+    }
+
+    function submitVetBooking(e) {
+      e.preventDefault();
+      if (!appState.user) {
+        showToast('Please sign in or create an account to book a vet appointment.', 'warning');
+        openAuthModal(false, true);
+        return;
+      }
+      finalizeVetBooking();
+    }
+
+    function submitContactForm(e) {
+      e.preventDefault();
+      e.target.reset();
+      showToast('Message received! Our Bengaluru pet care team will reply within 2 hours.');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+
+    // =========================================================================
+    // 12. INITIALIZATION ON WINDOW LOAD
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      updateHeaderUserUI();
+      updateCartBadge();
+      renderHomeFeatured();
+      switchTab('home');
+
+      const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+      const vetDateEl = document.getElementById('vet-date');
+      if (vetDateEl) {
+        vetDateEl.min = tomorrow;
+        vetDateEl.value = tomorrow;
+      }
+    });
+  </script>
+</body>
+</html>
